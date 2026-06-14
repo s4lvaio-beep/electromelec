@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ElectroMELEC | Portail de Formation & Ressources Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0F1923;
+    --bg2: #152130;
+    --bg3: #1C2D3F;
+    --cyan: #00D4FF;
+    --cyan2: #00A8CC;
+    --yellow: #FFB800;
+    --green: #00E676;
+    --red: #FF3D57;
+    --white: #E8F4F8;
+    --muted: #6B8FA8;
+    --border: rgba(0,212,255,0.15);
+    --card: rgba(21,33,48,0.9);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior: smooth; }
+  body { background:var(--bg); color:var(--white); font-family:'Inter',sans-serif; overflow-x:hidden; }
+
+  /* NAV */
+  nav {
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    background:rgba(15,25,35,0.95); backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--border);
+    display:flex; align-items:center; justify-content:space-between;
+    padding:0 2rem; height:64px;
+  }
+  .nav-logo { display:flex; align-items:center; gap:.6rem; text-decoration:none; }
+  .nav-logo svg { width:32px; height:32px; }
+  .nav-logo span { font-family:'Rajdhani',sans-serif; font-size:1.4rem; font-weight:700; color:var(--white); }
+  .nav-logo em { color:var(--cyan); font-style:normal; }
+  .nav-links { display:flex; gap:.25rem; }
+  .nav-links a {
+    color:var(--muted); text-decoration:none; font-size:.85rem; font-weight:500;
+    padding:.4rem .75rem; border-radius:6px; transition:.2s;
+    cursor:pointer;
+  }
+  .nav-links a:hover, .nav-links a.active { color:var(--cyan); background:rgba(0,212,255,.08); }
+  .nav-cta {
+    background:var(--cyan); color:var(--bg); border:none; padding:.4rem 1rem;
+    border-radius:6px; font-family:'Inter',sans-serif; font-weight:600; font-size:.85rem;
+    cursor:pointer; transition:.2s;
+  }
+  .nav-cta:hover { background:var(--cyan2); transform:translateY(-1px); }
+
+  /* SECTIONS */
+  section { display:none; padding-top:64px; min-height:100vh; }
+  section.active { display:block; }
+
+  /* ═══════════ HERO ═══════════ */
+  #hero {
+    display:flex !important; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; padding:80px 2rem 4rem; position:relative; overflow:hidden;
+  }
+  .hero-bg {
+    position:absolute; inset:0; pointer-events:none;
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0,212,255,0.08) 0%, transparent 70%);
+  }
+  #arc-canvas { position:absolute; inset:0; opacity:.4; pointer-events:none; }
+  .hero-badge {
+    display:inline-flex; align-items:center; gap:.5rem;
+    background:rgba(0,212,255,.1); border:1px solid rgba(0,212,255,.3);
+    color:var(--cyan); font-size:.75rem; font-weight:600; letter-spacing:.08em;
+    padding:.35rem .9rem; border-radius:20px; margin-bottom:1.5rem; text-transform:uppercase;
+  }
+  .hero-badge span { width:6px; height:6px; background:var(--cyan); border-radius:50%; animation:pulse 1.5s infinite; }
+  h1 { font-family:'Rajdhani',sans-serif; font-size:clamp(2.4rem,6vw,4.5rem); font-weight:700; line-height:1.05; margin-bottom:1rem; }
+  h1 em { color:var(--cyan); font-style:normal; }
+  .hero-sub { font-size:1.05rem; color:var(--muted); max-width:560px; line-height:1.7; margin-bottom:2.5rem; }
+  .hero-btns { display:flex; gap:1rem; flex-wrap:wrap; justify-content:center; margin-bottom:3.5rem; }
+  .btn-primary {
+    background:var(--cyan); color:var(--bg); border:none; padding:.75rem 1.75rem;
+    border-radius:8px; font-weight:700; font-size:.95rem; cursor:pointer; transition:.2s;
+  }
+  .btn-primary:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,212,255,.3); }
+  .btn-outline {
+    background:transparent; color:var(--white); border:1px solid var(--border);
+    padding:.75rem 1.75rem; border-radius:8px; font-weight:500; font-size:.95rem;
+    cursor:pointer; transition:.2s;
+  }
+  .btn-outline:hover { border-color:var(--cyan); color:var(--cyan); }
+  .hero-stats { display:flex; gap:3rem; flex-wrap:wrap; justify-content:center; }
+  .stat { text-align:center; }
+  .stat-n { font-family:'Rajdhani',sans-serif; font-size:2.2rem; font-weight:700; color:var(--cyan); }
+  .stat-l { font-size:.8rem; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; }
+
+  /* DOMAIN CARDS */
+  .domain-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:1rem; padding:2rem; max-width:1100px; margin:0 auto; }
+  .domain-card {
+    background:var(--card); border:1px solid var(--border); border-radius:12px;
+    padding:1.25rem 1rem; text-align:center; cursor:pointer; transition:.25s;
+    text-decoration:none; color:var(--white);
+  }
+  .domain-card:hover { border-color:var(--cyan); transform:translateY(-3px); box-shadow:0 8px 24px rgba(0,212,255,.1); }
+  .domain-card .ico { font-size:2rem; margin-bottom:.5rem; }
+  .domain-card .lbl { font-family:'Rajdhani',sans-serif; font-size:1rem; font-weight:600; }
+  .domain-card .sub { font-size:.75rem; color:var(--muted); margin-top:.2rem; }
+
+  /* ═══════════ COURS ═══════════ */
+  #cours { padding:80px 2rem 4rem; }
+  .page-header { max-width:1100px; margin:0 auto 2rem; }
+  .page-header h2 { font-family:'Rajdhani',sans-serif; font-size:2rem; font-weight:700; }
+  .page-header h2 em { color:var(--cyan); font-style:normal; }
+  .page-header p { color:var(--muted); margin-top:.4rem; }
+
+  .level-tabs { display:flex; gap:.5rem; margin-bottom:2rem; }
+  .level-tab {
+    padding:.5rem 1.25rem; border-radius:6px; border:1px solid var(--border);
+    background:transparent; color:var(--muted); cursor:pointer; font-size:.9rem; font-weight:500; transition:.2s;
+  }
+  .level-tab.active { background:var(--cyan); color:var(--bg); border-color:var(--cyan); }
+
+  .cours-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:1.25rem; max-width:1100px; margin:0 auto; }
+  .cours-card {
+    background:var(--card); border:1px solid var(--border); border-radius:12px; overflow:hidden; transition:.2s;
+  }
+  .cours-card:hover { border-color:var(--cyan); box-shadow:0 4px 20px rgba(0,212,255,.1); }
+  .cours-head { padding:1.25rem; border-bottom:1px solid var(--border); }
+  .cours-tag { display:inline-block; padding:.2rem .6rem; border-radius:4px; font-size:.7rem; font-weight:600; text-transform:uppercase; letter-spacing:.06em; margin-bottom:.5rem; }
+  .tag-b1 { background:rgba(0,212,255,.15); color:var(--cyan); }
+  .tag-b2 { background:rgba(255,184,0,.15); color:var(--yellow); }
+  .tag-b3 { background:rgba(0,230,118,.15); color:var(--green); }
+  .tag-b4 { background:rgba(255,61,87,.15); color:var(--red); }
+  .cours-title { font-family:'Rajdhani',sans-serif; font-size:1.1rem; font-weight:600; margin-bottom:.3rem; }
+  .cours-desc { font-size:.83rem; color:var(--muted); line-height:1.5; }
+  .cours-foot { padding:.75rem 1.25rem; display:flex; align-items:center; justify-content:space-between; }
+  .cours-level { font-size:.75rem; color:var(--muted); }
+  .cours-btn {
+    background:transparent; border:1px solid var(--cyan); color:var(--cyan);
+    padding:.3rem .75rem; border-radius:5px; font-size:.8rem; cursor:pointer; transition:.2s;
+  }
+  .cours-btn:hover { background:var(--cyan); color:var(--bg); }
+
+  /* ═══════════ QCM ═══════════ */
+  #qcm { padding:80px 2rem 4rem; }
+  .qcm-wrap { max-width:720px; margin:0 auto; }
+  .qcm-selector { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:1rem; margin-bottom:2rem; }
+  .qcm-sel-card {
+    background:var(--card); border:1px solid var(--border); border-radius:10px;
+    padding:1.25rem; cursor:pointer; transition:.2s; text-align:center;
+  }
+  .qcm-sel-card:hover { border-color:var(--cyan); }
+  .qcm-sel-card .ico { font-size:1.8rem; margin-bottom:.5rem; }
+  .qcm-sel-card .nm { font-family:'Rajdhani',sans-serif; font-weight:600; font-size:1rem; }
+  .qcm-sel-card .cnt { font-size:.78rem; color:var(--muted); margin-top:.2rem; }
+
+  .qcm-active { display:none; }
+  .qcm-active.visible { display:block; }
+  .qcm-progress { height:4px; background:var(--bg3); border-radius:2px; margin-bottom:1.5rem; }
+  .qcm-progress-bar { height:100%; background:var(--cyan); border-radius:2px; transition:.4s; }
+  .qcm-counter { font-size:.82rem; color:var(--muted); margin-bottom:1rem; }
+  .qcm-question { font-family:'Rajdhani',sans-serif; font-size:1.3rem; font-weight:600; margin-bottom:1.5rem; line-height:1.4; }
+  .qcm-options { display:flex; flex-direction:column; gap:.75rem; margin-bottom:1.5rem; }
+  .qcm-option {
+    background:var(--bg3); border:1px solid var(--border); border-radius:8px;
+    padding:1rem 1.25rem; cursor:pointer; transition:.2s; display:flex; align-items:center; gap:.75rem;
+    font-size:.95rem;
+  }
+  .qcm-option:hover:not(.locked) { border-color:var(--cyan); background:rgba(0,212,255,.05); }
+  .qcm-option.correct { border-color:var(--green); background:rgba(0,230,118,.08); }
+  .qcm-option.wrong { border-color:var(--red); background:rgba(255,61,87,.08); }
+  .qcm-option .opt-letter {
+    width:28px; height:28px; border-radius:50%; background:var(--bg); border:1px solid var(--border);
+    display:flex; align-items:center; justify-content:center; font-size:.8rem; font-weight:600; flex-shrink:0;
+  }
+  .qcm-explanation {
+    background:rgba(0,212,255,.06); border:1px solid rgba(0,212,255,.2);
+    border-radius:8px; padding:1rem 1.25rem; font-size:.88rem; line-height:1.6;
+    color:var(--white); margin-bottom:1.5rem; display:none;
+  }
+  .qcm-explanation.visible { display:block; }
+  .qcm-nav { display:flex; justify-content:flex-end; gap:.75rem; }
+  .qcm-result {
+    text-align:center; padding:2rem;
+    background:var(--card); border:1px solid var(--border); border-radius:12px;
+    display:none;
+  }
+  .qcm-result.visible { display:block; }
+  .result-score { font-family:'Rajdhani',sans-serif; font-size:4rem; font-weight:700; color:var(--cyan); }
+  .result-label { color:var(--muted); margin-bottom:1.5rem; }
+
+  /* ═══════════ CALCULATEURS ═══════════ */
+  #calc { padding:80px 2rem 4rem; }
+  .calc-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(340px,1fr)); gap:1.5rem; max-width:1100px; margin:0 auto; }
+  .calc-card {
+    background:var(--card); border:1px solid var(--border); border-radius:12px; overflow:hidden;
+  }
+  .calc-card-head {
+    padding:1rem 1.25rem; background:rgba(0,212,255,.05);
+    border-bottom:1px solid var(--border); display:flex; align-items:center; gap:.75rem;
+  }
+  .calc-card-head .ico { font-size:1.5rem; }
+  .calc-card-head h3 { font-family:'Rajdhani',sans-serif; font-size:1.1rem; font-weight:600; }
+  .calc-body { padding:1.25rem; }
+  .calc-row { display:grid; grid-template-columns:1fr 1fr; gap:.75rem; margin-bottom:.75rem; }
+  .calc-field { display:flex; flex-direction:column; gap:.3rem; }
+  .calc-field label { font-size:.78rem; color:var(--muted); font-weight:500; }
+  .calc-field input, .calc-field select {
+    background:var(--bg); border:1px solid var(--border); color:var(--white);
+    padding:.55rem .75rem; border-radius:6px; font-family:'JetBrains Mono',monospace; font-size:.9rem;
+    outline:none; transition:.2s;
+  }
+  .calc-field input:focus, .calc-field select:focus { border-color:var(--cyan); }
+  .calc-compute {
+    width:100%; padding:.65rem; background:var(--cyan); color:var(--bg);
+    border:none; border-radius:7px; font-weight:700; font-size:.95rem; cursor:pointer;
+    margin-top:.25rem; transition:.2s;
+  }
+  .calc-compute:hover { background:var(--cyan2); }
+  .calc-result {
+    margin-top:.75rem; background:var(--bg); border:1px solid var(--border);
+    border-radius:8px; padding:.75rem 1rem; font-family:'JetBrains Mono',monospace;
+    font-size:.88rem; min-height:40px;
+  }
+  .calc-result .res-val { color:var(--cyan); font-size:1.2rem; font-weight:500; }
+  .calc-result .res-detail { color:var(--muted); font-size:.78rem; margin-top:.3rem; }
+
+  /* ═══════════ FICHES ═══════════ */
+  #fiches { padding:80px 2rem 4rem; }
+  .fiches-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:1.2rem; max-width:1100px; margin:0 auto; }
+  .fiche-card {
+    background:var(--card); border:1px solid var(--border); border-radius:12px;
+    padding:1.5rem; transition:.2s; cursor:pointer;
+  }
+  .fiche-card:hover { border-color:var(--yellow); transform:translateY(-2px); }
+  .fiche-icon { font-size:2rem; margin-bottom:.75rem; }
+  .fiche-title { font-family:'Rajdhani',sans-serif; font-size:1.1rem; font-weight:600; margin-bottom:.4rem; }
+  .fiche-desc { font-size:.83rem; color:var(--muted); line-height:1.55; margin-bottom:1rem; }
+  .fiche-meta { display:flex; gap:.5rem; flex-wrap:wrap; }
+  .fiche-tag { padding:.2rem .6rem; border-radius:4px; font-size:.72rem; font-weight:600; background:rgba(255,184,0,.12); color:var(--yellow); }
+  .fiche-modal {
+    display:none; position:fixed; inset:0; z-index:200;
+    background:rgba(10,17,25,.85); backdrop-filter:blur(8px);
+    align-items:center; justify-content:center; padding:1rem;
+  }
+  .fiche-modal.open { display:flex; }
+  .fiche-modal-inner {
+    background:var(--bg2); border:1px solid var(--border); border-radius:16px;
+    max-width:680px; width:100%; max-height:88vh; overflow-y:auto; padding:2rem;
+  }
+  .modal-close {
+    float:right; background:transparent; border:1px solid var(--border); color:var(--muted);
+    padding:.3rem .7rem; border-radius:5px; cursor:pointer; font-size:.85rem; margin-bottom:1rem;
+  }
+  .modal-close:hover { border-color:var(--red); color:var(--red); }
+  .fiche-content h3 { font-family:'Rajdhani',sans-serif; font-size:1.5rem; font-weight:700; color:var(--cyan); margin-bottom:1rem; }
+  .fiche-content h4 { font-family:'Rajdhani',sans-serif; font-size:1.1rem; color:var(--yellow); margin:1.2rem 0 .5rem; }
+  .fiche-content p { font-size:.9rem; color:var(--white); line-height:1.7; margin-bottom:.75rem; }
+  .fiche-content ul { padding-left:1.2rem; margin-bottom:.75rem; }
+  .fiche-content li { font-size:.88rem; color:var(--white); line-height:1.6; margin-bottom:.3rem; }
+  .formula-box {
+    background:var(--bg); border:1px solid rgba(0,212,255,.3); border-radius:8px;
+    padding:.75rem 1rem; font-family:'JetBrains Mono',monospace; font-size:.95rem;
+    color:var(--cyan); margin:.5rem 0 1rem; text-align:center;
+  }
+
+  /* FOOTER */
+  footer {
+    border-top:1px solid var(--border); padding:1.5rem 2rem;
+    display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem;
+    color:var(--muted); font-size:.8rem;
+  }
+
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+  /* UTIL */
+  .hidden { display:none !important; }
+  .max-w { max-width:1100px; margin:0 auto; }
+  .section-title { font-family:'Rajdhani',sans-serif; font-size:1.8rem; font-weight:700; margin-bottom:.5rem; }
+  .section-title em { color:var(--cyan); font-style:normal; }
+
+  @media(max-width:640px){
+    .nav-links { display:none; }
+    .hero-stats { gap:1.5rem; }
+    .calc-row { grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#" onclick="showSection('hero')">
+    <svg viewBox="0 0 32 32" fill="none"><polygon points="16,2 28,10 28,22 16,30 4,22 4,10" fill="none" stroke="#00D4FF" stroke-width="1.5"/><path d="M18 8 L13 16 H17 L14 24 L21 14 H17 L20 8Z" fill="#00D4FF"/></svg>
+    <span>Electro<em>MELEC</em></span>
+  </a>
+  <div class="nav-links">
+    <a onclick="showSection('hero')" class="active" id="nav-hero">Accueil</a>
+    <a onclick="showSection('cours')" id="nav-cours">Cours</a>
+    <a onclick="showSection('qcm')" id="nav-qcm">QCM</a>
+    <a onclick="showSection('calc')" id="nav-calc">Calculateurs</a>
+    <a onclick="showSection('fiches')" id="nav-fiches">Fiches Pro</a>
+  </div>
+  <button class="nav-cta" onclick="showSection('qcm')">⚡ Tester mes connaissances</button>
+</nav>
+
+<!-- CANVAS ARC -->
+<canvas id="arc-canvas"></canvas>
+
+<!-- ═══ HERO ═══ -->
+<section id="hero" class="active">
+  <div class="hero-bg"></div>
+  <div class="hero-badge"><span></span> BAC PRO MELEC · Ressources Pro · Calculateurs</div>
+  <h1>Le portail <em>électrique</em><br>de référence</h1>
+  <p class="hero-sub">Formation complète pour les élèves BAC Pro MELEC et les professionnels de l'électricité. Cours, QCM, calculateurs et fiches techniques en un seul endroit.</p>
+  <div class="hero-btns">
+    <button class="btn-primary" onclick="showSection('cours')">📚 Commencer les cours</button>
+    <button class="btn-outline" onclick="showSection('calc')">🧮 Accéder aux calculateurs</button>
+  </div>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-n">4</div><div class="stat-l">Blocs de compétences</div></div>
+    <div class="stat"><div class="stat-n">120+</div><div class="stat-l">Questions QCM</div></div>
+    <div class="stat"><div class="stat-n">8</div><div class="stat-l">Calculateurs pro</div></div>
+    <div class="stat"><div class="stat-n">3</div><div class="stat-l">Niveaux (2nde→Term)</div></div>
+  </div>
+
+  <div style="margin-top:3rem; width:100%;">
+    <p style="text-align:center;color:var(--muted);font-size:.85rem;margin-bottom:1.25rem;text-transform:uppercase;letter-spacing:.08em;">Domaines couverts</p>
+    <div class="domain-grid">
+      <div class="domain-card" onclick="showSection('cours')"><div class="ico">⚡</div><div class="lbl">Installations</div><div class="sub">Habitat & Tertiaire</div></div>
+      <div class="domain-card" onclick="showSection('cours')"><div class="ico">🏭</div><div class="lbl">Industriel</div><div class="sub">Moteurs & Variateurs</div></div>
+      <div class="domain-card" onclick="showSection('cours')"><div class="ico">🏠</div><div class="lbl">Domotique</div><div class="sub">KNX, Bus, Protocoles</div></div>
+      <div class="domain-card" onclick="showSection('cours')"><div class="ico">⚙️</div><div class="lbl">Automatisme</div><div class="sub">API, Grafcet, LADDER</div></div>
+      <div class="domain-card" onclick="showSection('cours')"><div class="ico">☀️</div><div class="lbl">Solaire</div><div class="sub">PV, Stockage</div></div>
+      <div class="domain-card" onclick="showSection('fiches')"><div class="ico">🛡️</div><div class="lbl">Habilitation</div><div class="sub">B0, B1, B2, BR, BC</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ COURS ═══ -->
+<section id="cours">
+  <div class="page-header max-w">
+    <h2>📚 <em>Cours</em> BAC Pro MELEC</h2>
+    <p>Contenus organisés par niveau et par bloc de compétences — référentiel Éduscol 2024</p>
+    <div class="level-tabs" style="margin-top:1rem;">
+      <button class="level-tab active" onclick="filterLevel('all',this)">Tous les niveaux</button>
+      <button class="level-tab" onclick="filterLevel('2nde',this)">2nde Pro</button>
+      <button class="level-tab" onclick="filterLevel('1ere',this)">1ère Pro</button>
+      <button class="level-tab" onclick="filterLevel('term',this)">Terminale Pro</button>
+    </div>
+  </div>
+  <div class="cours-grid" id="cours-grid">
+    <!-- Généré par JS -->
+  </div>
+</section>
+
+<!-- ═══ QCM ═══ -->
+<section id="qcm">
+  <div class="page-header max-w" style="max-width:720px;">
+    <h2>📝 <em>QCM</em> Interactifs</h2>
+    <p>Testez vos connaissances sur tous les domaines du BAC Pro MELEC</p>
+  </div>
+  <div class="qcm-wrap">
+    <div class="qcm-selector" id="qcm-selector">
+      <div class="qcm-sel-card" onclick="startQCM('elec')"><div class="ico">⚡</div><div class="nm">Électricité générale</div><div class="cnt">10 questions</div></div>
+      <div class="qcm-sel-card" onclick="startQCM('habilitation')"><div class="ico">🛡️</div><div class="nm">Habilitation électrique</div><div class="cnt">10 questions</div></div>
+      <div class="qcm-sel-card" onclick="startQCM('automatisme')"><div class="ico">⚙️</div><div class="nm">Automatisme</div><div class="cnt">8 questions</div></div>
+      <div class="qcm-sel-card" onclick="startQCM('domotique')"><div class="ico">🏠</div><div class="nm">Domotique</div><div class="cnt">8 questions</div></div>
+    </div>
+    <div class="qcm-active" id="qcm-active">
+      <div class="qcm-progress"><div class="qcm-progress-bar" id="qcm-bar"></div></div>
+      <div class="qcm-counter" id="qcm-counter"></div>
+      <div class="qcm-question" id="qcm-question"></div>
+      <div class="qcm-options" id="qcm-options"></div>
+      <div class="qcm-explanation" id="qcm-explanation"></div>
+      <div class="qcm-nav">
+        <button class="btn-outline" onclick="resetQCM()">← Choisir un autre thème</button>
+        <button class="btn-primary" id="qcm-next" onclick="nextQuestion()" style="display:none;">Question suivante →</button>
+      </div>
+    </div>
+    <div class="qcm-result" id="qcm-result">
+      <div class="result-score" id="result-score"></div>
+      <div class="result-label" id="result-label"></div>
+      <button class="btn-primary" onclick="resetQCM()" style="margin-top:1rem;">Recommencer</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CALCULATEURS ═══ -->
+<section id="calc">
+  <div class="page-header max-w">
+    <h2>🧮 <em>Calculateurs</em> Professionnels</h2>
+    <p>Outils de calcul pour les professionnels et élèves en électricité</p>
+  </div>
+  <div class="calc-grid max-w">
+
+    <!-- Loi d'Ohm -->
+    <div class="calc-card">
+      <div class="calc-card-head"><span class="ico">⚡</span><h3>Loi d'Ohm</h3></div>
+      <div class="calc-body">
+        <div class="calc-row">
+          <div class="calc-field"><label>Tension U (V)</label><input type="number" id="ohm-u" placeholder="ex: 230"></div>
+          <div class="calc-field"><label>Intensité I (A)</label><input type="number" id="ohm-i" placeholder="ex: 5"></div>
+        </div>
+        <div class="calc-row">
+          <div class="calc-field"><label>Résistance R (Ω)</label><input type="number" id="ohm-r" placeholder="ex: 46"></div>
+          <div class="calc-field"><label>Calculer</label>
+            <select id="ohm-calc">
+              <option value="r">R = U / I</option>
+              <option value="u">U = R × I</option>
+              <option value="i">I = U / R</option>
+            </select>
+          </div>
+        </div>
+        <button class="calc-compute" onclick="calcOhm()">Calculer</button>
+        <div class="calc-result" id="ohm-result"><span style="color:var(--muted);font-size:.85rem;">Résultat ici</span></div>
+      </div>
+    </div>
+
+    <!-- Puissance -->
+    <div class="calc-card">
+      <div class="calc-card-head"><span class="ico">💡</span><h3>Puissance électrique</h3></div>
+      <div class="calc-body">
+        <div class="calc-row">
+          <div class="calc-field"><label>Tension U (V)</label><input type="number" id="pw-u" placeholder="230"></div>
+          <div class="calc-field"><label>Intensité I (A)</label><input type="number" id="pw-i" placeholder="10"></div>
+        </div>
+        <div class="calc-row">
+          <div class="calc-field"><label>cos φ</label><input type="number" id="pw-cos" placeholder="0.85" step="0.01" max="1"></div>
+          <div class="calc-field"><label>Réseau</label>
+            <select id="pw-phase">
+              <option value="mono">Monophasé</option>
+              <option value="tri">Triphasé</option>
+            </select>
+          </div>
+        </div>
+        <button class="calc-compute" onclick="calcPuissance()">Calculer</button>
+        <div class="calc-result" id="pw-result"><span style="color:var(--muted);font-size:.85rem;">Résultat ici</span></div>
+      </div>
+    </div>
+
+    <!-- Section de câble -->
+    <div class="calc-card">
+      <div class="calc-card-head"><span class="ico">🔌</span><h3>Section de câble</h3></div>
+      <div class="calc-body">
+        <div class="calc-row">
+          <div class="calc-field"><label>Intensité I (A)</label><input type="number" id="cab-i" placeholder="16"></div>
+          <div class="calc-field"><label>Longueur L (m)</label><input type="number" id="cab-l" placeholder="25"></div>
+        </div>
+        <div class="calc-row">
+          <div class="calc-field"><label>Chute de tension max (%)</label><input type="number" id="cab-dt" placeholder="3" step="0.5"></div>
+          <div class="calc-field"><label>Réseau</label>
+            <select id="cab-phase">
+              <option value="mono">Monophasé (230V)</option>
+              <option value="tri">Triphasé (400V)</option>
+            </select>
+          </div>
+        </div>
+        <button class="calc-compute" onclick="calcCable()">Calculer la section</button>
+        <div class="calc-result" id="cab-result"><span style="color:var(--muted);font-size:.85rem;">Résultat ici</span></div>
+      </div>
+    </div>
+
+    <!-- Chute de tension -->
+    <div class="calc-card">
+      <div class="calc-card-head"><span class="ico">📉</span><h3>Chute de tension</h3></div>
+      <div class="calc-body">
+        <div class="calc-row">
+          <div class="calc-field"><label>Section S (mm²)</label>
+            <select id="ct-s">
+              <option>1.5</option><option>2.5</option><option>4</option><option>6</option>
+              <option>10</option><option>16</option><option>25</option><option>35</option>
+            </select>
+          </div>
+          <div class="calc-field"><label>Longueur L (m)</label><input type="number" id="ct-l" placeholder="20"></div>
+        </div>
+        <div class="calc-row">
+          <div class="calc-field"><label>Intensité I (A)</label><input type="number" id="ct-i" placeholder="10"></div>
+          <div class="calc-field"><label>Réseau</label>
+            <select id="ct-phase">
+              <option value="mono">Monophasé</option>
+              <option value="tri">Triphasé</option>
+            </select>
+          </div>
+        </div>
+        <button class="calc-compute" onclick="calcChuteTension()">Calculer ΔU</button>
+        <div class="calc-result" id="ct-result"><span style="color:var(--muted);font-size:.85rem;">Résultat ici</span></div>
+      </div>
+    </div>
+
+    <!-- Moteur MCC -->
+    <div class="calc-card">
+      <div class="calc-card-head"><span class="ico">⚙️</span><h3>Moteur à courant continu</h3></div>
+      <div class="calc-body">
+        <div class="calc-row">
+          <div class="calc-field"><label>Tension d'alimentation U (V)</label><input type="number" id="mcc-u" placeholder="220"></div>
+          <div class="calc-field"><label>Résistance induit Ra (Ω)</label><input type="number" id="mcc-ra" placeholder="2.5" step="0.1"></div>
+        </div>
+        <div class="calc-row">
+          <div class="calc-field"><label>Courant induit Ia (A)</label><input type="number" id="mcc-ia" placeholder="8"></div>
+          <div class="calc-field"><label>Rendement η (%)</label><input type="number" id="mcc-eta" placeholder="85"></div>
+        </div>
+        <button class="calc-compute" onclick="calcMCC()">Calculer le MCC</button>
+        <div class="calc-result" id="mcc-result"><span style="color:var(--muted);font-size:.85rem;">Résultat ici</span></div>
+      </div>
+    </div>
+
+    <!-- Transformateur -->
+    <div class="calc-card">
+      <div class="calc-card-head"><span class="ico">🔄</span><h3>Transformateur</h3></div>
+      <div class="calc-body">
+        <div class="calc-row">
+          <div class="calc-field"><label>Tension primaire U1 (V)</label><input type="number" id="tr-u1" placeholder="20000"></div>
+          <div class="calc-field"><label>Tension secondaire U2 (V)</label><input type="number" id="tr-u2" placeholder="230"></div>
+        </div>
+        <div class="calc-row">
+          <div class="calc-field"><label>Courant primaire I1 (A)</label><input type="number" id="tr-i1" placeholder="0.5"></div>
+          <div class="calc-field"><label>Calculer</label>
+            <select id="tr-calc">
+              <option value="ratio">Rapport de transformation</option>
+              <option value="i2">Courant secondaire I2</option>
+              <option value="s">Puissance apparente S (VA)</option>
+            </select>
+          </div>
+        </div>
+        <button class="calc-compute" onclick="calcTransfo()">Calculer</button>
+        <div class="calc-result" id="tr-result"><span style="color:var(--muted);font-size:.85rem;">Résultat ici</span></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══ FICHES PRO ═══ -->
+<section id="fiches">
+  <div class="page-header max-w">
+    <h2>📋 <em>Fiches</em> Techniques Pro</h2>
+    <p>Références rapides pour le terrain et la préparation aux examens</p>
+  </div>
+  <div class="fiches-grid max-w" id="fiches-grid"></div>
+</section>
+
+<!-- MODAL FICHE -->
+<div class="fiche-modal" id="fiche-modal" onclick="closeFicheModal(event)">
+  <div class="fiche-modal-inner">
+    <button class="modal-close" onclick="closeFicheModalBtn()">✕ Fermer</button>
+    <div class="fiche-content" id="fiche-content"></div>
+  </div>
+</div>
+
+<footer>
+  <span>⚡ ElectroMELEC — Portail de formation BAC Pro MELEC</span>
+  <span style="color:var(--border)">Personnalisez ce portail avec vos propres contenus</span>
+</footer>
+
+<script>
+// ══════════════════════════════════
+//  NAVIGATION
+// ══════════════════════════════════
+function showSection(id) {
+  document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const navEl = document.getElementById('nav-' + id);
+  if (navEl) navEl.classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// ══════════════════════════════════
+//  ARC ANIMATION
+// ══════════════════════════════════
+const canvas = document.getElementById('arc-canvas');
+const ctx = canvas.getContext('2d');
+function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+resizeCanvas(); window.addEventListener('resize', resizeCanvas);
+const arcs = Array.from({length:6}, () => ({ x: Math.random()*canvas.width, y: Math.random()*canvas.height*0.5, life:0, maxLife:40+Math.random()*60, segments:[] }));
+function newArc(a) {
+  a.x = Math.random()*canvas.width; a.y = 0; a.life = 0;
+  a.maxLife = 40 + Math.random()*60;
+  let x = a.x, y = a.y, segs = [[x,y]];
+  while(y < canvas.height*0.6) { x += (Math.random()-0.5)*60; y += 10+Math.random()*20; segs.push([x,y]); }
+  a.segments = segs;
+}
+arcs.forEach(newArc);
+function drawArcs() {
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  arcs.forEach(a => {
+    a.life++;
+    if(a.life > a.maxLife) newArc(a);
+    const alpha = Math.sin((a.life/a.maxLife)*Math.PI)*0.6;
+    ctx.strokeStyle = `rgba(0,212,255,${alpha})`;
+    ctx.lineWidth = 1;
+    ctx.shadowColor = '#00D4FF';
+    ctx.shadowBlur = 6;
+    ctx.beginPath();
+    a.segments.forEach(([x,y],i) => i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y));
+    ctx.stroke();
+  });
+  requestAnimationFrame(drawArcs);
+}
+drawArcs();
+
+// ══════════════════════════════════
+//  COURS DATA
+// ══════════════════════════════════
+const coursData = [
+  {tag:'B1',tagClass:'tag-b1',title:'Analyser le besoin et identifier les solutions',desc:'Lecture de schémas, identification des matériels et fonctions dans une installation électrique.',level:'2nde',levelKey:'2nde'},
+  {tag:'B1',tagClass:'tag-b1',title:'Décoder les documents techniques',desc:'Plans d'implantation, schémas unifilaires et multifilaires, notes de calcul.',level:'1ère Pro',levelKey:'1ere'},
+  {tag:'B2',tagClass:'tag-b2',title:'Préparer la réalisation d'un ouvrage',desc:'Approvisionnement, outillage, EPI, prise en compte des risques professionnels.',level:'2nde',levelKey:'2nde'},
+  {tag:'B2',tagClass:'tag-b2',title:'Réaliser une installation en habitat',desc:'Pose de câbles, appareillage, raccordement tableaux électriques résidentiels NF C 15-100.',level:'1ère Pro',levelKey:'1ere'},
+  {tag:'B2',tagClass:'tag-b2',title:'Installations industrielles & tertiaires',desc:'Chemins de câbles, armoires de distribution, départs moteurs, appareillage industriel.',level:'Terminale',levelKey:'term'},
+  {tag:'B3',tagClass:'tag-b3',title:'Mettre en service une installation',desc:'Essais, mesures, vérifications avant mise sous tension. Utilisation des appareils de mesure.',level:'1ère Pro',levelKey:'1ere'},
+  {tag:'B3',tagClass:'tag-b3',title:'Mise en service automatismes',desc:'API (Zelio, S7-1200), programmation Ladder, test et validation des automatismes.',level:'Terminale',levelKey:'term'},
+  {tag:'B4',tagClass:'tag-b4',title:'Maintenir en condition opérationnelle',desc:'Diagnostic de pannes, maintenance préventive et corrective sur installations électriques.',level:'Terminale',levelKey:'term'},
+  {tag:'B1',tagClass:'tag-b1',title:'Domotique et bâtiment connecté',desc:'Protocoles KNX, Bus 2 fils, variation d'éclairage, gestion des volets, alarmes techniques.',level:'1ère Pro',levelKey:'1ere'},
+  {tag:'B3',tagClass:'tag-b3',title:'Énergie solaire photovoltaïque',desc:'Dimensionnement d'une installation PV, onduleurs, stockage, raccordement au réseau.',level:'Terminale',levelKey:'term'},
+  {tag:'B2',tagClass:'tag-b2',title:'Habilitation électrique',desc:'Niveaux B0,B1,B2,BR,BC — procédures de consignation, zones de travail, EPI.',level:'2nde',levelKey:'2nde'},
+  {tag:'B4',tagClass:'tag-b4',title:'Moteurs électriques & variateurs',desc:'MCC, moteurs asynchrones, démarreurs étoile-triangle, variateurs de vitesse.',level:'Terminale',levelKey:'term'},
+];
+
+function renderCours(filter='all') {
+  const grid = document.getElementById('cours-grid');
+  grid.innerHTML = coursData
+    .filter(c => filter==='all' || c.levelKey===filter)
+    .map(c => `
+      <div class="cours-card">
+        <div class="cours-head">
+          <span class="cours-tag ${c.tagClass}">${c.tag}</span>
+          <div class="cours-title">${c.title}</div>
+          <div class="cours-desc">${c.desc}</div>
+        </div>
+        <div class="cours-foot">
+          <span class="cours-level">📍 ${c.level}</span>
+          <button class="cours-btn">Accéder →</button>
+        </div>
+      </div>`).join('');
+}
+renderCours();
+
+function filterLevel(lvl, btn) {
+  document.querySelectorAll('.level-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  renderCours(lvl);
+}
+
+// ══════════════════════════════════
+//  QCM DATA
+// ══════════════════════════════════
+const qcmData = {
+  elec: [
+    {q:"Quelle est la tension nominale du réseau monophasé en France ?",opts:["110 V","230 V","400 V","24 V"],correct:1,exp:"Le réseau monophasé en France est de 230V entre phase et neutre (norme NF EN 60038)."},
+    {q:"La loi d'Ohm exprime la relation entre :",opts:["Puissance, tension et fréquence","Tension, intensité et résistance","Courant, puissance et inductance","Résistance, impédance et réactance"],correct:1,exp:"U = R × I. La tension est égale à la résistance multipliée par l'intensité."},
+    {q:"Quelle est l'unité de la puissance apparente ?",opts:["Watt (W)","Var (VAr)","Volt-ampère (VA)","Joule (J)"],correct:2,exp:"La puissance apparente S s'exprime en VA (volt-ampère). P active en W, P réactive en VAr."},
+    {q:"Un circuit RLC en série est en résonance quand :",opts:["XL > XC","XC > XL","XL = XC","R = 0"],correct:2,exp:"À la résonance, la réactance inductive XL est égale à la réactance capacitive XC. L'impédance est alors minimale et égale à R."},
+    {q:"Le cosinus phi (cos φ) représente :",opts:["Le rendement du moteur","Le facteur de puissance","La chute de tension","L'inductance du circuit"],correct:1,exp:"Le cos φ est le facteur de puissance, rapport entre la puissance active (W) et la puissance apparente (VA)."},
+    {q:"Pour mesurer une intensité, l'ampèremètre se branche :",opts:["En parallèle","En série","Entre phase et neutre","Sur la prise de terre"],correct:1,exp:"L'ampèremètre se branche TOUJOURS en série dans le circuit dont on veut mesurer le courant."},
+    {q:"Quelle tension trouve-t-on entre deux phases d'un réseau triphasé 230V/400V ?",opts:["230 V","315 V","400 V","690 V"],correct:2,exp:"400V est la tension entre deux phases (tension composée). 230V est la tension simple entre une phase et le neutre."},
+    {q:"L'effet Joule correspond à :",opts:["La production de froid par l'électricité","La dissipation d'énergie sous forme de chaleur","La conversion AC/DC","L'induction électromagnétique"],correct:1,exp:"L'effet Joule est la dissipation de puissance thermique P = R × I² dans un conducteur parcouru par un courant."},
+    {q:"Un conducteur de section 2,5 mm² en cuivre peut alimenter :",opts:["Un circuit éclairage 10A maxi","Un circuit prises 16A maxi","Un circuit moteur 32A maxi","Un circuit 63A maxi"],correct:1,exp:"Selon la NF C 15-100, un conducteur 2,5 mm² protège les circuits de prises de courant jusqu'à 16A."},
+    {q:"La fréquence du réseau électrique en France est de :",opts:["50 Hz","60 Hz","100 Hz","25 Hz"],correct:0,exp:"Le réseau électrique français fonctionne à 50 Hz (50 cycles par seconde). Les USA utilisent 60 Hz."},
+  ],
+  habilitation: [
+    {q:"Le titre habilitation BR correspond à :",opts:["Travaux hors tension simple","Chargé de consignation","Chargé de travaux de remplacement et raccordement","Surveillance électrique"],correct:2,exp:"BR = Chargé d'interventions générales (remplacement, raccordement). Il peut intervenir sur des équipements en présence de tension."},
+    {q:"La distance de voisinage renforcé (DV) en BT est de :",opts:["30 cm","50 cm","1 m","3 m"],correct:1,exp:"La distance de voisinage renforcé DV en BT est de 300 mm. Au-delà de 50 cm on est hors zone de voisinage."},
+    {q:"Combien d'étapes comporte la consignation d'un ouvrage ?",opts:["2","3","4","5"],correct:2,exp:"La consignation comporte 4 étapes : 1-Séparation, 2-Condamnation, 3-Vérification d'absence de tension (VAT), 4-Mise à la terre et en court-circuit (MALT/MCC)."},
+    {q:"L'habilitation H1 concerne :",opts:["Le domaine BT","Le domaine HTA","Le domaine HTB","La très basse tension"],correct:1,exp:"H = Haute Tension. H1 = exécutant en HTA (1 à 50 kV). B correspond au domaine BT (jusqu'à 1000V AC)."},
+    {q:"Quel EPI est INDISPENSABLE pour effectuer une VAT en BT ?",opts:["Casque de chantier","Gants isolants de classe 00 minimum","Chaussures de sécurité","Gilet fluorescent"],correct:1,exp:"Les gants isolants sont l'EPI fondamental pour toute intervention en présence de tension. Classe 00 minimum pour le BT."},
+    {q:"La zone de travail sous tension (ZT) en BT est délimitée par :",opts:["DV = 300 mm","La distance de voisinage simple","Le volume de voisinage renforcé","Les limites de l'armoire"],correct:2,exp:"La zone de travail sous tension est le volume entourant les pièces nues sous tension dans lequel il ne faut pas pénétrer sans habilitation TST."},
+    {q:"Un B0 peut :",opts:["Réaliser des travaux électriques sous tension","Effectuer une VAT","Travailler à proximité de pièces nues sous tension BT (avec surveillance)","Consigner un ouvrage"],correct:2,exp:"Le B0 ne fait pas de travaux électriques. Il peut travailler à proximité sous surveillance d'un habilité BS ou B1."},
+    {q:"Le document autorisant les travaux sur un ouvrage consigné s'appelle :",opts:["Ordre de travail","Attestation de consignation","Avis de fin de travaux","Titre d'habilitation"],correct:1,exp:"L'attestation de consignation (ou certificat pour les ouvrages) est remise par le chargé de consignation au chargé de travaux avant le début des travaux."},
+    {q:"La vérification d'absence de tension (VAT) doit se faire :",opts:["Avant la mise à la terre","Après la mise à la terre","Sans EPI si en BT","Une seule fois pour toute la journée"],correct:0,exp:"La VAT s'effectue AVANT la mise à la terre. On vérifie d'abord l'absence de tension avec un VAT, puis seulement on met à la terre."},
+    {q:"Le symbole ⚡ sur un équipement électrique signifie :",opts:["Courant alternatif","Danger électrique - pièces sous tension","Mise à la terre obligatoire","Courant continu"],correct:1,exp:"L'éclair dans un triangle pointe vers un danger électrique lié à la présence de pièces sous tension dangereuse."},
+  ],
+  automatisme: [
+    {q:"Un GRAFCET est :",opts:["Un langage de programmation informatique","Un outil graphique de description des automatismes séquentiels","Un schéma de câblage électrique","Un protocole de communication industriel"],correct:1,exp:"Le GRAFCET (Graphe Fonctionnel de Commande Étape/Transition) est un outil de description des automatismes séquentiels (norme NF EN 60848)."},
+    {q:"Dans un automate programmable, la mémoire programme est stockée dans :",opts:["La CPU","L'EEPROM ou Flash","Les modules d'E/S","Le bus de terrain"],correct:1,exp:"Le programme utilisateur est stocké dans la mémoire non volatile (EEPROM, Flash) pour être conservé lors des coupures de courant."},
+    {q:"En langage LADDER, le contact normalement fermé est représenté par :",opts:["[|  |]","[|/|]","( )","{ }"],correct:1,exp:"Le contact normalement fermé (NF) est représenté par /| en LADDER. Il laisse passer le courant logique quand la bobine associée est inactive."},
+    {q:"Une sortie TOR d'un API peut prendre :",opts:["N'importe quelle valeur analogique","2 états : 0 ou 1","4 états","16 états"],correct:1,exp:"TOR = Tout Ou Rien. Une sortie TOR est binaire : soit à l'état 0 (inactif) soit à l'état 1 (actif)."},
+    {q:"Le démarrage étoile-triangle d'un moteur sert à :",opts:["Inverser le sens de rotation","Réduire le courant de démarrage","Augmenter la vitesse nominale","Améliorer le facteur de puissance"],correct:1,exp:"Le démarrage étoile-triangle réduit la tension appliquée au moteur (U/√3) au démarrage, limitant le courant à 1/3 du courant de démarrage direct."},
+    {q:"Le capteur inductif détecte :",opts:["Tous types de matériaux","Uniquement les métaux ferreux","Les métaux (ferreux et non ferreux)","Uniquement les liquides"],correct:2,exp:"Le capteur inductif détecte les métaux conducteurs (ferreux ET non ferreux comme l'aluminium ou le cuivre) sans contact physique."},
+    {q:"La temporisation à l'enclenchement (TON) :",opts:["Décompte avant de désactiver la sortie","Active la sortie après un délai depuis l'activation de l'entrée","Active immédiatement puis temporise","Ne fonctionne qu'en courant continu"],correct:1,exp:"TON (Timer ON-delay) : la sortie s'active après un délai T à partir du front montant de l'entrée."},
+    {q:"Un bus de terrain PROFIBUS est un réseau :",opts:["Ethernet industriel","Série RS-485 basé sur le protocole DP","CAN automobile","Modbus TCP/IP"],correct:1,exp:"PROFIBUS DP est basé sur RS-485 et utilise une structure maître-esclave. C'est un standard industriel très répandu pour les automatismes."},
+  ],
+  domotique: [
+    {q:"Le protocole KNX utilise comme support physique principal :",opts:["Wi-Fi 2.4 GHz","Câble bus 2 fils (TP)","Fibre optique","Courants porteurs (CPL)"],correct:1,exp:"KNX TP (Twisted Pair) utilise un câble bus 2 fils spécifique pour transporter données et alimentation des modules (29V DC)."},
+    {q:"Dans une installation KNX, l'adresse physique d'un composant se présente sous la forme :",opts:["192.168.1.x","X.Y.Z (zone.ligne.appareil)","MAC address 48 bits","ID hexadécimal unique"],correct:1,exp:"L'adresse physique KNX est du type 1.1.1 : zone.ligne.numéro d'appareil. Elle est unique dans l'installation."},
+    {q:"Le logiciel officiel de programmation KNX s'appelle :",opts:["PL7 Pro","ETS (Engineering Tool Software)","Step7","Unity Pro"],correct:1,exp:"ETS (Engineering Tool Software) est le logiciel de configuration et programmation officiel KNX, édité par la KNX Association."},
+    {q:"Un actionneur KNX de store-volet reçoit des ordres de type :",opts:["Analogique 0-10V","Télégramme bus KNX","Signal 4-20mA","Modulation MLI"],correct:1,exp:"Tous les composants KNX communiquent exclusivement via des télégrammes sur le bus KNX, quel que soit leur fonction (éclairage, stores, chauffage…)."},
+    {q:"Le VDI (Voix Données Images) désigne :",opts:["Un système de vidéosurveillance","Le câblage réseau structuré d'un bâtiment","Un protocole de communication","Un type de capteur domotique"],correct:1,exp:"Le VDI regroupe les réseaux de communication (RJ45 Cat 6, fibre, TV, téléphonie) d'un bâtiment selon la norme NF EN 50173."},
+    {q:"La GTB (Gestion Technique du Bâtiment) permet de :",opts:["Gérer uniquement l'éclairage","Superviser et piloter tous les équipements techniques d'un bâtiment","Remplacer le tableau électrique","Contrôler uniquement le chauffage"],correct:1,exp:"La GTB centralise la supervision et le pilotage de tous les équipements (CVC, éclairage, stores, sécurité, énergie) pour optimiser leur fonctionnement."},
+    {q:"Le protocole EnOcean se distingue par :",opts:["Sa vitesse très élevée","Ses composants sans fil ET sans pile (énergie ambiante)","Sa compatibilité exclusive avec IP","Son câblage en étoile obligatoire"],correct:1,exp:"EnOcean utilise la récupération d'énergie ambiante (appui sur bouton, lumière, température) pour alimenter ses émetteurs sans fil sans pile."},
+    {q:"Dans un système d'alarme, le détecteur IRP (infrarouge passif) détecte :",opts:["Les variations de luminosité","Le mouvement par variation de chaleur","Les vibrations mécaniques","Le bris de vitre"],correct:1,exp:"Le détecteur IRP (ou PIR) détecte les corps chauds en mouvement en analysant les variations de rayonnement infrarouge dans son champ de vision."},
+  ],
+};
+
+let qcmState = { theme:'', questions:[], current:0, score:0, answered:false };
+function startQCM(theme) {
+  qcmState = { theme, questions: qcmData[theme], current:0, score:0, answered:false };
+  document.getElementById('qcm-selector').style.display='none';
+  document.getElementById('qcm-active').classList.add('visible');
+  document.getElementById('qcm-result').classList.remove('visible');
+  renderQuestion();
+}
+function renderQuestion() {
+  const q = qcmState.questions[qcmState.current];
+  const pct = (qcmState.current/qcmState.questions.length)*100;
+  document.getElementById('qcm-bar').style.width = pct+'%';
+  document.getElementById('qcm-counter').textContent = `Question ${qcmState.current+1} sur ${qcmState.questions.length}`;
+  document.getElementById('qcm-question').textContent = q.q;
+  document.getElementById('qcm-explanation').classList.remove('visible');
+  document.getElementById('qcm-next').style.display='none';
+  qcmState.answered = false;
+  const letters = ['A','B','C','D'];
+  document.getElementById('qcm-options').innerHTML = q.opts.map((o,i) => `
+    <div class="qcm-option" id="opt-${i}" onclick="answerQCM(${i})">
+      <div class="opt-letter">${letters[i]}</div>
+      <span>${o}</span>
+    </div>`).join('');
+}
+function answerQCM(idx) {
+  if(qcmState.answered) return;
+  qcmState.answered = true;
+  document.querySelectorAll('.qcm-option').forEach(o => o.classList.add('locked'));
+  const q = qcmState.questions[qcmState.current];
+  if(idx === q.correct) {
+    document.getElementById('opt-'+idx).classList.add('correct');
+    qcmState.score++;
+  } else {
+    document.getElementById('opt-'+idx).classList.add('wrong');
+    document.getElementById('opt-'+q.correct).classList.add('correct');
+  }
+  const expEl = document.getElementById('qcm-explanation');
+  expEl.textContent = '💡 ' + q.exp;
+  expEl.classList.add('visible');
+  document.getElementById('qcm-next').style.display='flex';
+  if(qcmState.current === qcmState.questions.length-1)
+    document.getElementById('qcm-next').textContent = 'Voir les résultats ✓';
+  else document.getElementById('qcm-next').textContent = 'Question suivante →';
+}
+function nextQuestion() {
+  qcmState.current++;
+  if(qcmState.current >= qcmState.questions.length) showQCMResult();
+  else renderQuestion();
+}
+function showQCMResult() {
+  document.getElementById('qcm-active').classList.remove('visible');
+  const res = document.getElementById('qcm-result');
+  res.classList.add('visible');
+  const pct = Math.round((qcmState.score/qcmState.questions.length)*100);
+  document.getElementById('result-score').textContent = `${qcmState.score}/${qcmState.questions.length}`;
+  const msgs = ['Continue d\'étudier 💪','Bien ! Encore un effort 📚','Très bien ! Tu maîtrises 👍','Excellent ! Parfait ! 🏆'];
+  const mi = pct<40?0:pct<60?1:pct<80?2:3;
+  document.getElementById('result-label').textContent = `${pct}% de bonnes réponses — ${msgs[mi]}`;
+}
+function resetQCM() {
+  document.getElementById('qcm-selector').style.display='grid';
+  document.getElementById('qcm-active').classList.remove('visible');
+  document.getElementById('qcm-result').classList.remove('visible');
+}
+
+// ══════════════════════════════════
+//  CALCULATEURS
+// ══════════════════════════════════
+function setResult(id, html) { document.getElementById(id).innerHTML = html; }
+
+function calcOhm() {
+  const u=parseFloat(document.getElementById('ohm-u').value);
+  const i=parseFloat(document.getElementById('ohm-i').value);
+  const r=parseFloat(document.getElementById('ohm-r').value);
+  const type=document.getElementById('ohm-calc').value;
+  if(type==='r'&&!isNaN(u)&&!isNaN(i)&&i!==0) setResult('ohm-result',`<div class="res-val">R = ${(u/i).toFixed(3)} Ω</div><div class="res-detail">R = U / I = ${u} / ${i}</div>`);
+  else if(type==='u'&&!isNaN(r)&&!isNaN(i)) setResult('ohm-result',`<div class="res-val">U = ${(r*i).toFixed(2)} V</div><div class="res-detail">U = R × I = ${r} × ${i}</div>`);
+  else if(type==='i'&&!isNaN(u)&&!isNaN(r)&&r!==0) setResult('ohm-result',`<div class="res-val">I = ${(u/r).toFixed(3)} A</div><div class="res-detail">I = U / R = ${u} / ${r}</div>`);
+  else setResult('ohm-result','<span style="color:var(--red)">Valeurs manquantes ou incorrectes</span>');
+}
+
+function calcPuissance() {
+  const u=parseFloat(document.getElementById('pw-u').value);
+  const i=parseFloat(document.getElementById('pw-i').value);
+  const cos=parseFloat(document.getElementById('pw-cos').value)||1;
+  const phase=document.getElementById('pw-phase').value;
+  if(isNaN(u)||isNaN(i)){setResult('pw-result','<span style="color:var(--red)">Valeurs manquantes</span>');return;}
+  let s,p,q;
+  if(phase==='mono'){s=u*i;p=s*cos;q=s*Math.sqrt(1-cos*cos);}
+  else{s=Math.sqrt(3)*u*i;p=s*cos;q=s*Math.sqrt(1-cos*cos);}
+  setResult('pw-result',`<div class="res-val">P = ${p.toFixed(0)} W</div><div class="res-detail">S = ${s.toFixed(0)} VA | Q = ${q.toFixed(0)} VAr | cos φ = ${cos}</div>`);
+}
+
+function calcCable() {
+  const i=parseFloat(document.getElementById('cab-i').value);
+  const l=parseFloat(document.getElementById('cab-l').value);
+  const dtPct=parseFloat(document.getElementById('cab-dt').value)||3;
+  const phase=document.getElementById('cab-phase').value;
+  if(isNaN(i)||isNaN(l)){setResult('cab-result','<span style="color:var(--red)">Valeurs manquantes</span>');return;}
+  const u=phase==='mono'?230:400;
+  const coeff=phase==='mono'?2:Math.sqrt(3);
+  const rho=0.01786; // résistivité cuivre Ω.mm²/m
+  const dtMax=u*dtPct/100;
+  const s=(coeff*rho*l*i)/dtMax;
+  const standards=[1.5,2.5,4,6,10,16,25,35,50,70,95,120];
+  const chosen=standards.find(v=>v>=s)||standards[standards.length-1];
+  setResult('cab-result',`<div class="res-val">S ≥ ${s.toFixed(2)} mm² → choisir <strong>${chosen} mm²</strong></div><div class="res-detail">ΔU max = ${dtMax.toFixed(1)} V (${dtPct}% de ${u}V) | L = ${l}m | I = ${i}A</div>`);
+}
+
+function calcChuteTension() {
+  const s=parseFloat(document.getElementById('ct-s').value);
+  const l=parseFloat(document.getElementById('ct-l').value);
+  const i=parseFloat(document.getElementById('ct-i').value);
+  const phase=document.getElementById('ct-phase').value;
+  if(isNaN(l)||isNaN(i)){setResult('ct-result','<span style="color:var(--red)">Valeurs manquantes</span>');return;}
+  const rho=0.01786;
+  const u=phase==='mono'?230:400;
+  const coeff=phase==='mono'?2:Math.sqrt(3);
+  const dt=coeff*rho*(l/s)*i;
+  const dtPct=(dt/u)*100;
+  const color=dtPct<=3?'var(--green)':dtPct<=5?'var(--yellow)':'var(--red)';
+  setResult('ct-result',`<div class="res-val" style="color:${color}">ΔU = ${dt.toFixed(2)} V (${dtPct.toFixed(2)}%)</div><div class="res-detail">${dtPct<=3?'✓ Conforme NF C 15-100 (≤3%)':dtPct<=5?'⚠️ Acceptable en industriel (≤5%)':'✗ Trop élevée, augmenter la section'}</div>`);
+}
+
+function calcMCC() {
+  const u=parseFloat(document.getElementById('mcc-u').value);
+  const ra=parseFloat(document.getElementById('mcc-ra').value);
+  const ia=parseFloat(document.getElementById('mcc-ia').value);
+  const eta=parseFloat(document.getElementById('mcc-eta').value)||100;
+  if(isNaN(u)||isNaN(ra)||isNaN(ia)){setResult('mcc-result','<span style="color:var(--red)">Valeurs manquantes</span>');return;}
+  const e=u-ra*ia; // f.c.e.m
+  const pa=u*ia; // puissance absorbée
+  const pu=pa*(eta/100); // puissance utile
+  const pj=ra*ia*ia; // pertes Joule
+  setResult('mcc-result',`<div class="res-val">E = ${e.toFixed(1)} V</div><div class="res-detail">Pa = ${pa.toFixed(0)}W | Pu = ${pu.toFixed(0)}W | P.Joule = ${pj.toFixed(1)}W | η = ${eta}%</div>`);
+}
+
+function calcTransfo() {
+  const u1=parseFloat(document.getElementById('tr-u1').value);
+  const u2=parseFloat(document.getElementById('tr-u2').value);
+  const i1=parseFloat(document.getElementById('tr-i1').value);
+  const type=document.getElementById('tr-calc').value;
+  if(isNaN(u1)||isNaN(u2)){setResult('tr-result','<span style="color:var(--red)">Valeurs manquantes</span>');return;}
+  if(type==='ratio') setResult('tr-result',`<div class="res-val">m = ${(u2/u1).toFixed(4)}</div><div class="res-detail">m = U2/U1 = ${u2}/${u1} | n = ${(u1/u2).toFixed(2)} (rapport de transformation inverse)</div>`);
+  else if(type==='i2'&&!isNaN(i1)) setResult('tr-result',`<div class="res-val">I2 = ${(i1*u1/u2).toFixed(3)} A</div><div class="res-detail">I2 = I1 × U1/U2 (conservation de la puissance)</div>`);
+  else if(type==='s'&&!isNaN(i1)) setResult('tr-result',`<div class="res-val">S = ${(u1*i1/1000).toFixed(2)} kVA</div><div class="res-detail">S = U1 × I1 = ${u1} × ${i1}</div>`);
+  else setResult('tr-result','<span style="color:var(--red)">Valeurs manquantes</span>');
+}
+
+// ══════════════════════════════════
+//  FICHES PRO
+// ══════════════════════════════════
+const fichesData = [
+  {
+    icon:'⚡', title:'Loi d\'Ohm & Kirchhoff', tags:['Électricité','Bases'],
+    desc:'Formules fondamentales : U=RI, lois des nœuds et des mailles.',
+    content:`<h3>⚡ Loi d'Ohm & Kirchhoff</h3>
+    <h4>Loi d'Ohm</h4>
+    <div class="formula-box">U = R × I &nbsp;|&nbsp; R = U/I &nbsp;|&nbsp; I = U/R</div>
+    <p>U en Volts (V), R en Ohms (Ω), I en Ampères (A)</p>
+    <h4>Loi des nœuds (Kirchhoff I)</h4>
+    <p>La somme algébrique des courants arrivant à un nœud est nulle :</p>
+    <div class="formula-box">Σ I entrants = Σ I sortants</div>
+    <h4>Loi des mailles (Kirchhoff II)</h4>
+    <p>La somme algébrique des tensions dans une maille fermée est nulle :</p>
+    <div class="formula-box">Σ U = 0 (dans une maille)</div>
+    <h4>Puissances</h4>
+    <ul><li>P = U × I (puissance active, Watts)</li><li>P = R × I² = U²/R</li><li>S = U × I (apparent, VA)</li><li>Q = U × I × sin φ (réactif, VAr)</li></ul>`
+  },
+  {
+    icon:'🛡️', title:'Habilitation électrique', tags:['Sécurité','BT/HT'],
+    desc:'Niveaux d\'habilitation, symboles et domaines de tension.',
+    content:`<h3>🛡️ Habilitation Électrique</h3>
+    <h4>Domaines de tension</h4>
+    <ul><li>TBT : ≤ 50V AC / ≤ 120V DC</li><li>BT : 50V à 1000V AC / 120V à 1500V DC</li><li>HTA : 1kV à 50kV AC</li><li>HTB : > 50kV AC</li></ul>
+    <h4>Symboles d'habilitation BT</h4>
+    <ul><li><strong>B0</strong> : Exécutant non électricien (travaux non électriques)</li><li><strong>B1</strong> : Exécutant électricien hors tension</li><li><strong>B1V</strong> : Exécutant au voisinage</li><li><strong>B2</strong> : Chargé de travaux hors tension</li><li><strong>BR</strong> : Chargé d'interventions générales</li><li><strong>BC</strong> : Chargé de consignation</li><li><strong>BS</strong> : Chargé d'interventions élémentaires</li></ul>
+    <h4>4 étapes de consignation</h4>
+    <ul><li>1. Séparation de l'ouvrage</li><li>2. Condamnation en position ouverte</li><li>3. Identification + VAT (Vérif. Absence Tension)</li><li>4. MALT + MCC (Mise à la Terre et Court-Circuit)</li></ul>`
+  },
+  {
+    icon:'📐', title:'Sections de câbles NF C 15-100', tags:['Installation','Normes'],
+    desc:'Tableau des sections normalisées et courants admissibles.',
+    content:`<h3>📐 Sections de câbles NF C 15-100</h3>
+    <h4>Sections normalisées et utilisations courantes</h4>
+    <ul>
+      <li><strong>1,5 mm²</strong> → Éclairage (16A max)</li>
+      <li><strong>2,5 mm²</strong> → Prises de courant 16A</li>
+      <li><strong>4 mm²</strong> → Chauffe-eau, lave-linge 20A</li>
+      <li><strong>6 mm²</strong> → Cuisinière, four 32A</li>
+      <li><strong>10 mm²</strong> → Sous-distribution 40A</li>
+      <li><strong>16 mm²</strong> → Départ tableau 63A</li>
+      <li><strong>25 mm²</strong> → Colonne montante</li>
+    </ul>
+    <h4>Chute de tension maximale</h4>
+    <ul><li>Éclairage : ΔU ≤ 3%</li><li>Force / prises : ΔU ≤ 5%</li></ul>
+    <div class="formula-box">S = (ρ × 2L × I) / ΔU_max</div>
+    <p>ρ cuivre = 0,01786 Ω.mm²/m | ρ alu = 0,029 Ω.mm²/m</p>`
+  },
+  {
+    icon:'⚙️', title:'Grafcet — Bases', tags:['Automatisme','API'],
+    desc:'Règles d\'évolution, étapes, transitions et actions.',
+    content:`<h3>⚙️ GRAFCET — Bases essentielles</h3>
+    <h4>Structure</h4>
+    <ul><li><strong>Étape</strong> : état stable du système (carré numéroté)</li><li><strong>Transition</strong> : condition de passage (réceptivité)</li><li><strong>Action</strong> : ce que fait le système dans l'étape</li></ul>
+    <h4>Règles d'évolution (5 règles)</h4>
+    <ul>
+      <li>R1 : Initialisation → étapes initiales actives</li>
+      <li>R2 : Franchissement d'une transition si étape amont active ET réceptivité vraie</li>
+      <li>R3 : Évolution = désactivation étapes amont + activation étapes aval</li>
+      <li>R4 : Plusieurs transitions franchissables simultanément → évolutions simultanées</li>
+      <li>R5 : Si une étape doit être activée et désactivée simultanément → reste active</li>
+    </ul>
+    <h4>Types d'actions</h4>
+    <ul><li>Continue : action active tant que l'étape l'est</li><li>Conditionnelle : si réceptivité vraie pendant l'étape</li><li>Mémorisée (S/R) : set/reset indépendant de l'étape</li></ul>`
+  },
+  {
+    icon:'☀️', title:'Solaire photovoltaïque', tags:['Énergie','Solaire'],
+    desc:'Dimensionnement d\'une installation PV raccordée réseau.',
+    content:`<h3>☀️ Solaire Photovoltaïque — Dimensionnement</h3>
+    <h4>Puissance crête (Wc)</h4>
+    <div class="formula-box">E (kWh) = P_crête (kWc) × H_ensoleillement × PR</div>
+    <p>PR (Performance Ratio) ≈ 0,75 à 0,85 selon installation</p>
+    <h4>Composants d'une installation</h4>
+    <ul>
+      <li>Panneaux PV : monocristallin (η ~20%), polycristallin (η ~17%)</li>
+      <li>Onduleur : convertit DC → AC, gestion MPPT</li>
+      <li>Coffret de protection AC/DC</li>
+      <li>Compteur de production + PDL (Point De Livraison)</li>
+    </ul>
+    <h4>Associations de panneaux</h4>
+    <ul>
+      <li>Série : U_total = n × U_panneau (I reste identique)</li>
+      <li>Parallèle : I_total = n × I_panneau (U reste identique)</li>
+    </ul>
+    <h4>Mise à la terre</h4>
+    <p>Masse des panneaux et structures métalliques obligatoirement reliées à la terre (NF C 15-712).</p>`
+  },
+  {
+    icon:'🔄', title:'Moteur asynchrone', tags:['Industriel','Moteurs'],
+    desc:'Principe, formules, démarrage et protections.',
+    content:`<h3>🔄 Moteur Asynchrone Triphasé</h3>
+    <h4>Formules essentielles</h4>
+    <div class="formula-box">ns = 60f / p &nbsp;|&nbsp; g = (ns - n) / ns</div>
+    <p>ns = vitesse synchrone (tr/min) | f = fréquence (Hz) | p = paires de pôles | g = glissement</p>
+    <h4>Couplages</h4>
+    <ul><li><strong>Étoile (Y)</strong> : U_bobinage = U_réseau / √3 → démarrage</li><li><strong>Triangle (Δ)</strong> : U_bobinage = U_réseau → régime nominal</li></ul>
+    <h4>Démarrages</h4>
+    <ul>
+      <li>Direct (DOL) : courant 5 à 8 × In</li>
+      <li>Étoile-Triangle : Id = In/3 — couple réduit</li>
+      <li>Résistances statoriques : atténuation progressive</li>
+      <li>Variateur de fréquence (VFD) : démarrage doux, économie énergie</li>
+    </ul>
+    <h4>Protections obligatoires</h4>
+    <ul><li>Disjoncteur magnétothermique (court-circuit)</li><li>Relais thermique (surcharge)</li><li>Parasurtenseur (si câblage long)</li></ul>`
+  },
+  {
+    icon:'🏠', title:'KNX — Aide-mémoire', tags:['Domotique','KNX'],
+    desc:'Adressage, topologie, groupes et types de données.',
+    content:`<h3>🏠 KNX — Aide-mémoire rapide</h3>
+    <h4>Caractéristiques du bus</h4>
+    <ul><li>Support : TP (câble 2 fils) | RF (radio) | PL (courant porteur) | IP</li><li>Alimentation bus : 29V DC, 160-320 mA par segment</li><li>Vitesse : 9600 bps (TP)</li></ul>
+    <h4>Adressage physique</h4>
+    <div class="formula-box">Zone . Ligne . Appareil (ex: 1.1.5)</div>
+    <ul><li>Max 15 zones | 15 lignes/zone | 256 appareils/ligne</li><li>Coupleur de ligne : relie lignes dans une zone</li><li>Coupleur de zone : relie les zones entre elles</li></ul>
+    <h4>Adresse de groupe</h4>
+    <p>Lie les émetteurs aux récepteurs via des objets de communication :</p>
+    <div class="formula-box">ex: 1/1/1 (groupe principal / moyen / sous-groupe)</div>
+    <h4>Types de données fréquents</h4>
+    <ul><li>DPT 1.001 : On/Off (1 bit)</li><li>DPT 5.001 : Gradation 0-100% (1 octet)</li><li>DPT 9.001 : Température (2 octets)</li></ul>`
+  },
+  {
+    icon:'📏', title:'Formules puissance & énergie', tags:['Électricité','Formules'],
+    desc:'Récapitulatif complet des formules puissance active, réactive, apparente.',
+    content:`<h3>📏 Puissance & Énergie — Récapitulatif</h3>
+    <h4>Monophasé</h4>
+    <div class="formula-box">P = U × I × cos φ (W)<br>Q = U × I × sin φ (VAr)<br>S = U × I (VA)</div>
+    <h4>Triphasé équilibré</h4>
+    <div class="formula-box">P = √3 × U × I × cos φ<br>Q = √3 × U × I × sin φ<br>S = √3 × U × I</div>
+    <p>U = tension entre phases (composée) | I = courant de ligne</p>
+    <h4>Triangle des puissances</h4>
+    <ul><li>S² = P² + Q²</li><li>cos φ = P / S</li><li>tan φ = Q / P</li></ul>
+    <h4>Énergie</h4>
+    <div class="formula-box">W = P × t (Wh) &nbsp;|&nbsp; 1 kWh = 3,6 MJ</div>
+    <h4>Facteur de puissance</h4>
+    <p>cos φ = 1 → charge purement résistive (idéal)</p>
+    <p>cos φ < 0,9 → pénalités EDF en industrie → compensation capacitive</p>`
+  },
+];
+
+function renderFiches() {
+  document.getElementById('fiches-grid').innerHTML = fichesData.map((f,i) => `
+    <div class="fiche-card" onclick="openFiche(${i})">
+      <div class="fiche-icon">${f.icon}</div>
+      <div class="fiche-title">${f.title}</div>
+      <div class="fiche-desc">${f.desc}</div>
+      <div class="fiche-meta">${f.tags.map(t=>`<span class="fiche-tag">${t}</span>`).join('')}</div>
+    </div>`).join('');
+}
+renderFiches();
+
+function openFiche(i) {
+  document.getElementById('fiche-content').innerHTML = fichesData[i].content;
+  document.getElementById('fiche-modal').classList.add('open');
+}
+function closeFicheModal(e) { if(e.target.id==='fiche-modal') closeFicheModalBtn(); }
+function closeFicheModalBtn() { document.getElementById('fiche-modal').classList.remove('open'); }
+</script>
+</body>
+</html>
