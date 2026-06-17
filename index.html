@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ElectroMELEC | Portail Polynésie française</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0F1923; --bg2:#152130; --bg3:#1C2D3F;
+  --cyan:#00D4FF; --cyan2:#00A8CC; --yellow:#FFB800;
+  --green:#00E676; --red:#FF3D57; --white:#E8F4F8;
+  --muted:#6B8FA8; --border:rgba(0,212,255,0.15); --card:rgba(21,33,48,0.95);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--white);font-family:'Inter',sans-serif;overflow-x:hidden;}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(15,25,35,0.98);
+border-bottom:1px solid var(--border);display:flex;align-items:center;
+justify-content:space-between;padding:0 1.5rem;height:60px;flex-wrap:wrap;}
+.logo{font-family:'Rajdhani',sans-serif;font-size:1.3rem;font-weight:700;color:var(--white);text-decoration:none;}
+.logo em{color:var(--cyan);font-style:normal;}
+.nav-links{display:flex;gap:4px;}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:.82rem;font-weight:500;
+padding:.4rem .7rem;border-radius:6px;transition:.2s;}
+.nav-links a:hover{color:var(--cyan);background:rgba(0,212,255,.1);}
+.nav-right{display:flex;gap:.5rem;align-items:center;}
+.btn-prof{background:transparent;border:1px solid var(--border);color:var(--muted);
+padding:.35rem .8rem;border-radius:6px;font-size:.78rem;text-decoration:none;cursor:pointer;}
+.btn-prof:hover{border-color:var(--yellow);color:var(--yellow);}
+
+.page{display:none;padding-top:70px;min-height:100vh;}
+#accueil{display:block;}
+body:has(#cours:target) #accueil,
+body:has(#qcm:target) #accueil,
+body:has(#calc:target) #accueil,
+body:has(#fiches:target) #accueil,
+body:has(#prof:target) #accueil{display:none;}
+.page:target{display:block;}
+
+#accueil{text-align:center;padding:70px 1.5rem 3rem;}
+.badge{display:inline-flex;align-items:center;gap:.5rem;
+background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.3);
+color:var(--cyan);font-size:.72rem;font-weight:600;letter-spacing:.06em;
+padding:.35rem .85rem;border-radius:20px;margin-bottom:1.5rem;text-transform:uppercase;}
+.badge-dot{width:6px;height:6px;background:var(--cyan);border-radius:50%;animation:pulse 1.5s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+h1{font-family:'Rajdhani',sans-serif;font-size:clamp(2rem,6vw,3.6rem);font-weight:700;line-height:1.08;margin-bottom:1rem;}
+h1 em{color:var(--cyan);font-style:normal;}
+.hero-sub{font-size:1rem;color:var(--muted);max-width:560px;margin:0 auto 2.2rem;line-height:1.7;}
+.hero-btns{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;margin-bottom:2.8rem;}
+.btn-p{background:var(--cyan);color:var(--bg);border:none;padding:.7rem 1.6rem;
+border-radius:8px;font-weight:700;font-size:.92rem;cursor:pointer;text-decoration:none;display:inline-block;}
+.btn-o{background:transparent;color:var(--white);border:1px solid var(--border);
+padding:.7rem 1.6rem;border-radius:8px;font-weight:500;font-size:.92rem;text-decoration:none;display:inline-block;}
+.stats{display:flex;gap:2.2rem;flex-wrap:wrap;justify-content:center;margin-bottom:2.8rem;}
+.stat-n{font-family:'Rajdhani',sans-serif;font-size:2rem;font-weight:700;color:var(--cyan);}
+.stat-l{font-size:.74rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;}
+.domains{display:grid;grid-template-columns:repeat(auto-fill,minmax(135px,1fr));gap:.7rem;max-width:900px;margin:0 auto;}
+.domain-card{background:var(--card);border:1px solid var(--border);border-radius:10px;
+padding:1rem;text-align:center;text-decoration:none;color:var(--white);display:block;}
+.domain-card:hover{border-color:var(--cyan);}
+.domain-card .ico{font-size:1.7rem;margin-bottom:.4rem;}
+.domain-card .lbl{font-family:'Rajdhani',sans-serif;font-size:.92rem;font-weight:600;}
+.domain-card .sub{font-size:.7rem;color:var(--muted);}
+.pf-banner{max-width:900px;margin:2.5rem auto 0;background:rgba(255,184,0,.07);
+border:1px solid rgba(255,184,0,.25);border-radius:12px;padding:1.1rem 1.4rem;
+text-align:left;font-size:.85rem;color:var(--white);line-height:1.6;}
+.pf-banner strong{color:var(--yellow);}
+
+.page-inner{max-width:1100px;margin:0 auto;padding:1.5rem;}
+.page-title{font-family:'Rajdhani',sans-serif;font-size:1.7rem;font-weight:700;margin-bottom:.4rem;}
+.page-title em{color:var(--cyan);font-style:normal;}
+.page-sub{color:var(--muted);font-size:.88rem;margin-bottom:1.4rem;}
+
+.level-tabs{display:flex;gap:.4rem;margin-bottom:1.4rem;flex-wrap:wrap;}
+.level-tab{padding:.42rem .95rem;border-radius:6px;border:1px solid var(--border);
+background:transparent;color:var(--muted);cursor:pointer;font-size:.82rem;font-weight:500;}
+.level-tab.on{background:var(--cyan);color:var(--bg);border-color:var(--cyan);}
+.cours-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;}
+.cours-card{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.cours-head{padding:1.05rem;}
+.ctag{display:inline-block;padding:.16rem .5rem;border-radius:4px;font-size:.68rem;
+font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.4rem;}
+.tb1{background:rgba(0,212,255,.15);color:var(--cyan);}
+.tb2{background:rgba(255,184,0,.15);color:var(--yellow);}
+.tb3{background:rgba(0,230,118,.15);color:var(--green);}
+.tb4{background:rgba(255,61,87,.15);color:var(--red);}
+.cours-title{font-family:'Rajdhani',sans-serif;font-size:1.02rem;font-weight:600;margin-bottom:.22rem;}
+.cours-desc{font-size:.8rem;color:var(--muted);line-height:1.5;}
+.cours-pf{font-size:.76rem;color:var(--yellow);margin-top:.4rem;display:flex;gap:.3rem;align-items:flex-start;}
+.cours-foot{padding:.6rem 1.05rem;display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--border);}
+.cours-lvl{font-size:.74rem;color:var(--muted);}
+.cours-btn{background:transparent;border:1px solid var(--cyan);color:var(--cyan);
+padding:.26rem .68rem;border-radius:5px;font-size:.76rem;cursor:pointer;}
+
+.qcm-wrap{max-width:700px;margin:0 auto;}
+.id-gate{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin-bottom:1.5rem;text-align:center;}
+.id-gate label{display:block;font-size:.85rem;color:var(--muted);margin-bottom:.5rem;}
+.id-gate input{background:var(--bg);border:1px solid var(--border);color:var(--white);
+padding:.6rem .9rem;border-radius:7px;font-size:1rem;width:200px;text-align:center;
+font-family:'JetBrains Mono',monospace;}
+.qcm-themes{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:.7rem;margin-bottom:1.4rem;}
+.theme-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.05rem;cursor:pointer;text-align:center;}
+.theme-card:hover{border-color:var(--cyan);}
+.theme-card.disabled{opacity:.4;cursor:not-allowed;}
+.theme-ico{font-size:1.5rem;margin-bottom:.4rem;}
+.theme-nm{font-family:'Rajdhani',sans-serif;font-weight:600;font-size:.92rem;}
+.theme-cnt{font-size:.72rem;color:var(--muted);margin-top:.2rem;}
+.qcm-box{display:none;}
+.qcm-box.on{display:block;}
+.qprog{height:4px;background:var(--bg3);border-radius:2px;margin-bottom:1.1rem;}
+.qprog-bar{height:100%;background:var(--cyan);border-radius:2px;transition:.4s;}
+.qcount{font-size:.78rem;color:var(--muted);margin-bottom:.8rem;}
+.qquestion{font-family:'Rajdhani',sans-serif;font-size:1.18rem;font-weight:600;margin-bottom:1.1rem;line-height:1.4;}
+.qopts{display:flex;flex-direction:column;gap:.55rem;margin-bottom:1.1rem;}
+.qopt{background:var(--bg3);border:1px solid var(--border);border-radius:8px;
+padding:.85rem 1.05rem;cursor:pointer;display:flex;align-items:center;gap:.6rem;font-size:.9rem;}
+.qopt:hover{border-color:var(--cyan);}
+.qopt.correct{border-color:var(--green);background:rgba(0,230,118,.08);}
+.qopt.wrong{border-color:var(--red);background:rgba(255,61,87,.08);}
+.qletter{width:25px;height:25px;border-radius:50%;background:var(--bg);border:1px solid var(--border);
+display:flex;align-items:center;justify-content:center;font-size:.76rem;font-weight:600;flex-shrink:0;}
+.qexp{background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.2);border-radius:8px;
+padding:.85rem 1.05rem;font-size:.84rem;line-height:1.6;display:none;margin-bottom:1.1rem;}
+.qexp.on{display:block;}
+.qnav{display:flex;justify-content:space-between;gap:.7rem;}
+.qresult{text-align:center;padding:2rem;background:var(--card);border:1px solid var(--border);border-radius:12px;display:none;}
+.qresult.on{display:block;}
+.res-score{font-family:'Rajdhani',sans-serif;font-size:3.6rem;font-weight:700;color:var(--cyan);}
+.send-status{font-size:.78rem;color:var(--muted);margin-top:.8rem;}
+
+.calc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:1.1rem;}
+.calc-card{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.calc-head{padding:.85rem 1.05rem;background:rgba(0,212,255,.05);border-bottom:1px solid var(--border);
+display:flex;align-items:center;gap:.55rem;}
+.calc-head h3{font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:600;}
+.calc-body{padding:1.05rem;}
+.calc-row{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.6rem;}
+.cfield{display:flex;flex-direction:column;gap:.22rem;}
+.cfield label{font-size:.72rem;color:var(--muted);font-weight:500;}
+.cfield input,.cfield select{background:var(--bg);border:1px solid var(--border);color:var(--white);
+padding:.48rem .6rem;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:.85rem;outline:none;width:100%;}
+.cfield input:focus,.cfield select:focus{border-color:var(--cyan);}
+.cbtn{width:100%;padding:.58rem;background:var(--cyan);color:var(--bg);border:none;border-radius:7px;
+font-weight:700;font-size:.88rem;cursor:pointer;margin-top:.2rem;}
+.cresult{margin-top:.6rem;background:var(--bg);border:1px solid var(--border);border-radius:7px;
+padding:.6rem .85rem;font-family:'JetBrains Mono',monospace;font-size:.82rem;min-height:36px;}
+.rval{color:var(--cyan);font-size:1.05rem;font-weight:500;}
+.rdet{color:var(--muted);font-size:.72rem;margin-top:.22rem;}
+.calc-note{font-size:.74rem;color:var(--yellow);margin-top:.5rem;line-height:1.5;}
+
+.domain-section{margin-bottom:2rem;}
+.domain-section h3{font-family:'Rajdhani',sans-serif;font-size:1.15rem;color:var(--cyan);
+margin-bottom:.8rem;padding-bottom:.5rem;border-bottom:1px solid var(--border);}
+
+.fiches-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(235px,1fr));gap:1rem;}
+.fiche-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.25rem;cursor:pointer;}
+.fiche-card:hover{border-color:var(--yellow);}
+.fiche-ico{font-size:1.7rem;margin-bottom:.55rem;}
+.fiche-title{font-family:'Rajdhani',sans-serif;font-size:1.02rem;font-weight:600;margin-bottom:.32rem;}
+.fiche-desc{font-size:.8rem;color:var(--muted);line-height:1.5;margin-bottom:.75rem;}
+.ftags{display:flex;gap:.35rem;flex-wrap:wrap;}
+.ftag{padding:.16rem .5rem;border-radius:4px;font-size:.68rem;font-weight:600;background:rgba(255,184,0,.12);color:var(--yellow);}
+
+.modal{display:none;position:fixed;inset:0;z-index:2000;background:rgba(10,17,25,.9);
+align-items:center;justify-content:center;padding:1rem;}
+.modal.on{display:flex;}
+.modal-box{background:var(--bg2);border:1px solid var(--border);border-radius:14px;
+max-width:660px;width:100%;max-height:88vh;overflow-y:auto;padding:1.7rem;}
+.mclose{float:right;background:transparent;border:1px solid var(--border);color:var(--muted);
+padding:.26rem .6rem;border-radius:5px;cursor:pointer;font-size:.8rem;margin-bottom:.7rem;}
+.mclose:hover{border-color:var(--red);color:var(--red);}
+.fiche-content h3{font-family:'Rajdhani',sans-serif;font-size:1.35rem;font-weight:700;color:var(--cyan);margin-bottom:.85rem;}
+.fiche-content h4{font-family:'Rajdhani',sans-serif;font-size:.98rem;color:var(--yellow);margin:.95rem 0 .4rem;}
+.fiche-content p{font-size:.86rem;line-height:1.7;margin-bottom:.6rem;}
+.fiche-content ul{padding-left:1.1rem;margin-bottom:.6rem;}
+.fiche-content li{font-size:.84rem;line-height:1.6;margin-bottom:.25rem;}
+.formula{background:var(--bg);border:1px solid rgba(0,212,255,.3);border-radius:7px;
+padding:.6rem .85rem;font-family:'JetBrains Mono',monospace;font-size:.88rem;color:var(--cyan);
+margin:.4rem 0 .8rem;text-align:center;}
+.pf-tag{display:inline-block;background:rgba(255,184,0,.15);color:var(--yellow);
+padding:.2rem .6rem;border-radius:5px;font-size:.74rem;font-weight:600;margin-bottom:.8rem;}
+
+/* PROF */
+.prof-gate{max-width:380px;margin:3rem auto;background:var(--card);border:1px solid var(--border);
+border-radius:12px;padding:2rem;text-align:center;}
+.prof-gate input{background:var(--bg);border:1px solid var(--border);color:var(--white);
+padding:.65rem .9rem;border-radius:7px;font-size:.95rem;width:100%;margin:1rem 0;text-align:center;}
+.prof-dash{display:none;}
+.prof-dash.on{display:block;}
+.prof-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem;margin-bottom:1.5rem;}
+.pstat{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.2rem;text-align:center;}
+.pstat-n{font-family:'Rajdhani',sans-serif;font-size:1.9rem;font-weight:700;color:var(--cyan);}
+.pstat-l{font-size:.75rem;color:var(--muted);}
+.prof-table-wrap{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:1.5rem;}
+table.prof-table{width:100%;border-collapse:collapse;font-size:.82rem;}
+table.prof-table th{background:rgba(0,212,255,.08);color:var(--cyan);text-align:left;
+padding:.6rem .8rem;font-weight:600;border-bottom:1px solid var(--border);}
+table.prof-table td{padding:.55rem .8rem;border-bottom:1px solid var(--border);color:var(--white);}
+.prof-actions{display:flex;gap:.8rem;flex-wrap:wrap;margin-bottom:1.5rem;}
+.iframe-sheet{width:100%;height:480px;border:1px solid var(--border);border-radius:10px;}
+
+footer{border-top:1px solid var(--border);padding:1.1rem 1.5rem;color:var(--muted);font-size:.76rem;text-align:center;}
+@media(max-width:600px){
+  .nav-links{display:none;}
+  .calc-row{grid-template-columns:1fr;}
+  .stats{gap:1.1rem;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#accueil" class="logo">Electro<em>MELEC</em></a>
+  <div class="nav-links">
+    <a href="#accueil">Accueil</a>
+    <a href="#cours">Cours</a>
+    <a href="#qcm">QCM</a>
+    <a href="#calc">Simulateurs</a>
+    <a href="#fiches">Fiches Pro</a>
+  </div>
+  <div class="nav-right">
+    <a href="#prof" class="btn-prof">👤 Espace Prof</a>
+  </div>
+</nav>
+
+<!-- ACCUEIL -->
+<div class="page" id="accueil">
+  <div class="badge"><span class="badge-dot"></span>BAC PRO MELEC · POLYNÉSIE FRANÇAISE</div>
+  <h1>Le portail <em>électrique</em><br>de Polynésie</h1>
+  <p class="hero-sub">Formation BAC Pro MELEC adaptée au contexte polynésien : réseau EDT, habitat traditionnel et moderne, énergie solaire, contraintes climatiques.</p>
+  <div class="hero-btns">
+    <a href="#cours" class="btn-p">📚 Commencer les cours</a>
+    <a href="#calc" class="btn-o">🧮 Simulateurs</a>
+  </div>
+  <div class="stats">
+    <div><div class="stat-n">4</div><div class="stat-l">Blocs de compétences</div></div>
+    <div><div class="stat-n">120+</div><div class="stat-l">Questions QCM</div></div>
+    <div><div class="stat-n">3</div><div class="stat-l">Simulateurs métier</div></div>
+    <div><div class="stat-n">3</div><div class="stat-l">Niveaux</div></div>
+  </div>
+  <p style="color:var(--muted);font-size:.8rem;text-transform:uppercase;letter-spacing:.06em;margin-bottom:1rem;">Domaines couverts</p>
+  <div class="domains">
+    <a href="#cours" class="domain-card"><div class="ico">⚡</div><div class="lbl">Installations</div><div class="sub">Habitat & Tertiaire</div></a>
+    <a href="#cours" class="domain-card"><div class="ico">🏭</div><div class="lbl">Industriel</div><div class="sub">Moteurs & Variateurs</div></a>
+    <a href="#cours" class="domain-card"><div class="ico">🏠</div><div class="lbl">Domotique</div><div class="sub">KNX, Bus, Protocoles</div></a>
+    <a href="#cours" class="domain-card"><div class="ico">⚙️</div><div class="lbl">Automatisme</div><div class="sub">API, Grafcet, LADDER</div></a>
+    <a href="#cours" class="domain-card"><div class="ico">☀️</div><div class="lbl">Solaire</div><div class="sub">PV, Stockage</div></a>
+    <a href="#fiches" class="domain-card"><div class="ico">🛡️</div><div class="lbl">Habilitation</div><div class="sub">B0, B1, B2, BR, BC</div></a>
+  </div>
+  <div class="pf-banner">
+    🌴 <strong>Contexte Polynésie française :</strong> Réseau géré par EDT-ENGIE, tension 230V/400V identique à la métropole, mais contraintes spécifiques : forte humidité (corrosion), risques cycloniques (fixations renforcées), habitat traditionnel (fare) et moderne, fort potentiel solaire (autoconsommation très répandue sur les îles).
+  </div>
+</div>
+
+<!-- COURS -->
+<div class="page" id="cours">
+  <div class="page-inner">
+    <div class="page-title">📚 <em>Cours</em> BAC Pro MELEC — Contexte Polynésien</div>
+    <p class="page-sub">Référentiel 2024 — exemples et contraintes adaptés à la Polynésie française</p>
+    <div class="level-tabs">
+      <button class="level-tab on" onclick="filterLevel('all',this)">Tous</button>
+      <button class="level-tab" onclick="filterLevel('2nde',this)">2nde Pro</button>
+      <button class="level-tab" onclick="filterLevel('1ere',this)">1ère Pro</button>
+      <button class="level-tab" onclick="filterLevel('term',this)">Terminale</button>
+    </div>
+    <div class="cours-grid" id="cours-grid"></div>
+  </div>
+</div>
+
+<!-- QCM -->
+<div class="page" id="qcm">
+  <div class="page-inner">
+    <div class="page-title">📝 <em>QCM</em> Interactifs — Spécial Polynésie</div>
+    <p class="page-sub">Entrez votre identifiant élève avant de commencer</p>
+    <div class="qcm-wrap">
+      <div class="id-gate" id="id-gate">
+        <label>Identifiant élève (donné par votre professeur)</label>
+        <input type="text" id="eleve-id" placeholder="ex: T-MELEC-12">
+      </div>
+      <div class="qcm-themes" id="qcm-themes"></div>
+      <div class="qcm-box" id="qcm-box">
+        <div class="qprog"><div class="qprog-bar" id="qbar"></div></div>
+        <div class="qcount" id="qcount"></div>
+        <div class="qquestion" id="qquestion"></div>
+        <div class="qopts" id="qopts"></div>
+        <div class="qexp" id="qexp"></div>
+        <div class="qnav">
+          <button class="btn-o" style="font-size:.82rem;padding:.5rem 1rem;" onclick="resetQCM()">← Retour</button>
+          <button class="btn-p" id="qnext" style="display:none;font-size:.82rem;padding:.5rem 1rem;" onclick="nextQ()">Suivant →</button>
+        </div>
+      </div>
+      <div class="qresult" id="qresult">
+        <div class="res-score" id="res-score"></div>
+        <div style="color:var(--muted);margin-bottom:.5rem;" id="res-msg"></div>
+        <div class="send-status" id="send-status"></div>
+        <button class="btn-p" onclick="resetQCM()" style="margin-top:1rem;">Recommencer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SIMULATEURS / CALCULATEURS -->
+<div class="page" id="calc">
+  <div class="page-inner">
+    <div class="page-title">🧮 <em>Simulateurs</em> par Domaine</div>
+    <p class="page-sub">Outils de calcul adaptés aux réalités polynésiennes (EDT, climat, normes)</p>
+
+    <div class="domain-section">
+      <h3>🏠 Habitat (Fare & Logement)</h3>
+      <div class="calc-grid">
+        <div class="calc-card">
+          <div class="calc-head"><span>⚡</span><h3>Loi d'Ohm</h3></div>
+          <div class="calc-body">
+            <div class="calc-row">
+              <div class="cfield"><label>Tension U (V)</label><input type="number" id="ou" placeholder="230"></div>
+              <div class="cfield"><label>Intensité I (A)</label><input type="number" id="oi" placeholder="5"></div>
+            </div>
+            <div class="calc-row">
+              <div class="cfield"><label>Résistance R (Ω)</label><input type="number" id="or" placeholder="46"></div>
+              <div class="cfield"><label>Calculer</label><select id="oc"><option value="r">R = U / I</option><option value="u">U = R × I</option><option value="i">I = U / R</option></select></div>
+            </div>
+            <button class="cbtn" onclick="cOhm()">Calculer</button>
+            <div class="cresult" id="ores"><span style="color:var(--muted)">Résultat ici</span></div>
+          </div>
+        </div>
+
+        <div class="calc-card">
+          <div class="calc-head"><span>🔌</span><h3>Section de câble (fare/maison)</h3></div>
+          <div class="calc-body">
+            <div class="calc-row">
+              <div class="cfield"><label>Intensité I (A)</label><input type="number" id="ci" placeholder="16"></div>
+              <div class="cfield"><label>Longueur L (m)</label><input type="number" id="cl" placeholder="25"></div>
+            </div>
+            <div class="calc-row">
+              <div class="cfield"><label>Chute max (%)</label><input type="number" id="cdt" placeholder="3"></div>
+              <div class="cfield"><label>Réseau</label><select id="cph"><option value="mono">Monophasé (230V)</option><option value="tri">Triphasé (400V)</option></select></div>
+            </div>
+            <button class="cbtn" onclick="cCable()">Calculer</button>
+            <div class="cresult" id="cres"><span style="color:var(--muted)">Résultat ici</span></div>
+            <div class="calc-note">💡 En Polynésie, l'humidité accélère la corrosion : privilégier des sections au-dessus du minimum théorique et du câblage avec gaine renforcée.</div>
+          </div>
+        </div>
+
+        <div class="calc-card">
+          <div class="calc-head"><span>☀️</span><h3>Dimensionnement Solaire PV</h3></div>
+          <div class="calc-body">
+            <div class="calc-row">
+              <div class="cfield"><label>Conso journalière (kWh)</label><input type="number" id="svC" placeholder="8"></div>
+              <div class="cfield"><label>Ensoleillement local (h/j)</label><input type="number" id="svH" placeholder="5.5" step="0.1"></div>
+            </div>
+            <div class="calc-row">
+              <div class="cfield"><label>Performance Ratio</label><input type="number" id="svPR" placeholder="0.80" step="0.01"></div>
+              <div class="cfield"><label>Puissance panneau (Wc)</label><input type="number" id="svWp" placeholder="400"></div>
+            </div>
+            <button class="cbtn" onclick="cSolaire()">Calculer</button>
+            <div class="cresult" id="svres"><span style="color:var(--muted)">Résultat ici</span></div>
+            <div class="calc-note">🌴 Ensoleillement moyen Polynésie : 5 à 6h/jour. Saison cyclonique (nov-avr) → prévoir fixations renforcées anti-vent.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="domain-section">
+      <h3>🏢 Tertiaire (Hôtels, Bureaux, Établissements)</h3>
+      <div class="calc-grid">
+        <div class="calc-card">
+          <div class="calc-head"><span>💡</span><h3>Puissance électrique</h3></div>
+          <div class="calc-body">
+            <div class="calc-row">
+              <div class="cfield"><label>Tension U (V)</label><input type="number" id="pu" placeholder="400"></div>
+              <div class="cfield"><label>Intensité I (A)</label><input type="number" id="pi" placeholder="20"></div>
+            </div>
+            <div class="calc-row">
+              <div class="cfield"><label>cos φ</label><input type="number" id="pcos" placeholder="0.85" step="0.01"></div>
+              <div class="cfield"><label>Réseau</label><select id="pph"><option value="tri">Triphasé</option><option value="mono">Monophasé</option></select></div>
+            </div>
+            <button class="cbtn" onclick="cPuissance()">Calculer</button>
+            <div class="cresult" id="pres"><span style="color:var(--muted)">Résultat ici</span></div>
+            <div class="calc-note">🏨 Les hôtels et résidences en PF combinent souvent climatisation (forte puissance) + production PV en autoconsommation.</div>
+          </div>
+        </div>
+
+        <div class="calc-card">
+          <div class="calc-head"><span>📉</span><h3>Chute de tension</h3></div>
+          <div class="calc-body">
+            <div class="calc-row">
+              <div class="cfield"><label>Section S (mm²)</label><select id="cts"><option>1.5</option><option>2.5</option><option>4</option><option>6</option><option>10</option><option>16</option><option>25</option><option>35</option></select></div>
+              <div class="cfield"><label>Longueur L (m)</label><input type="number" id="ctl" placeholder="20"></div>
+            </div>
+            <div class="calc-row">
+              <div class="cfield"><label>Intensité I (A)</label><input type="number" id="cti" placeholder="10"></div>
+              <div class="cfield"><label>Réseau</label><select id="ctph"><option value="mono">Monophasé</option><option value="tri">Triphasé</option></select></div>
+            </div>
+            <button class="cbtn" onclick="cChute()">Calculer ΔU</button>
+            <div class="cresult" id="ctres"><span style="color:var(--muted)">Résultat ici</span></div>
+          </div>
+        </div>
+
+        <div class="calc-card">
+          <div class="calc-head"><span>🔄</span><h3>Transformateur (postes EDT)</h3></div>
+          <div class="calc-body">
+            <div class="calc-row">
+              <div class="cfield"><label>Tension U1 (V)</label><input type="number" id="tu1" placeholder="20000"></div>
+              <div class="cfield"><label>Tension U2 (V)</label><input type="number" id="tu2" placeholder="400"></div>
+            </div>
+            <div class="calc-row">
+              <div class="cfield"><label>Courant I1 (A)</label><input type="number" id="ti1" placeholder="0.5"></div>
+              <div class="cfield"><label>Calculer</label><select id="tc"><option value="ratio">Rapport m</option><option value="i2">Courant I2</option><option value="s">Puissance S</option></select></div>
+            </div>
+            <button class="cbtn" onclick="cTransfo()">Calculer</button>
+            <div class="cresult" id="tres"><span style="color:var(--muted)">Résultat ici</span></div>
+            <div class="calc-note">⚡ Le réseau HTA insulaire (20kV) alimente les postes de distribution EDT avant transformation en 400V/230V.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="domain-section">
+      <h3>🏭 Industriel</h3>
+      <div class="calc-grid">
+        <div class="calc-card">
+          <div class="calc-head"><span>⚙️</span><h3>Moteur MCC</h3></div>
+          <div class="calc-body">
+            <div class="calc-row">
+              <div class="cfield"><label>Tension U (V)</label><input type="number" id="mu" placeholder="220"></div>
+              <div class="cfield"><label>Résistance Ra (Ω)</label><input type="number" id="mra" placeholder="2.5" step="0.1"></div>
+            </div>
+            <div class="calc-row">
+              <div class="cfield"><label>Courant Ia (A)</label><input type="number" id="mia" placeholder="8"></div>
+              <div class="cfield"><label>Rendement η (%)</label><input type="number" id="meta" placeholder="85"></div>
+            </div>
+            <button class="cbtn" onclick="cMCC()">Calculer</button>
+            <div class="cresult" id="mres"><span style="color:var(--muted)">Résultat ici</span></div>
+          </div>
+        </div>
+
+        <div class="calc-card">
+          <div class="calc-head"><span>🌬️</span><h3>Démarrage moteur (pompe/clim)</h3></div>
+          <div class="calc-body">
+            <div class="calc-row">
+              <div class="cfield"><label>Courant nominal In (A)</label><input type="number" id="dmIn" placeholder="12"></div>
+              <div class="cfield"><label>Type démarrage</label><select id="dmType"><option value="direct">Direct</option><option value="et">Étoile-Triangle</option><option value="vfd">Variateur</option></select></div>
+            </div>
+            <button class="cbtn" onclick="cDemarrage()">Calculer Id</button>
+            <div class="cresult" id="dmres"><span style="color:var(--muted)">Résultat ici</span></div>
+            <div class="calc-note">🏭 Utile pour pompes de relevage (eau de mer/pluie) et groupes clim industriels très présents dans les infrastructures de PF.</div>
+          </div>
+        </div>
+
+        <div class="calc-card">
+          <div class="calc-head"><span>🔋</span><h3>Autonomie batterie (stockage solaire)</h3></div>
+          <div class="calc-body">
+            <div class="calc-row">
+              <div class="cfield"><label>Capacité batterie (Ah)</label><input type="number" id="batC" placeholder="200"></div>
+              <div class="cfield"><label>Tension batterie (V)</label><input type="number" id="batU" placeholder="48"></div>
+            </div>
+            <div class="calc-row">
+              <div class="cfield"><label>Puissance charge (W)</label><input type="number" id="batP" placeholder="1500"></div>
+              <div class="cfield"><label>Profondeur décharge (%)</label><input type="number" id="batDOD" placeholder="80"></div>
+            </div>
+            <button class="cbtn" onclick="cBatterie()">Calculer autonomie</button>
+            <div class="cresult" id="batres"><span style="color:var(--muted)">Résultat ici</span></div>
+            <div class="calc-note">🌴 Le stockage batterie est très utilisé sur les îles isolées (sites hors réseau EDT, motu, stations isolées).</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- FICHES -->
+<div class="page" id="fiches">
+  <div class="page-inner">
+    <div class="page-title">📋 <em>Fiches</em> Techniques Pro</div>
+    <p class="page-sub">Références rapides — terrain et examens</p>
+    <div class="fiches-grid" id="fiches-grid"></div>
+  </div>
+</div>
+
+<!-- ESPACE PROF -->
+<div class="page" id="prof">
+  <div class="page-inner">
+    <div class="prof-gate" id="prof-gate">
+      <div style="font-size:2rem;margin-bottom:.5rem;">🔒</div>
+      <div class="page-title" style="font-size:1.3rem;">Espace Professeur</div>
+      <p class="page-sub" style="margin-bottom:0;">Accès réservé</p>
+      <input type="password" id="prof-pwd" placeholder="Mot de passe">
+      <button class="btn-p" style="width:100%;" onclick="checkProfPwd()">Se connecter</button>
+      <div id="prof-error" style="color:var(--red);font-size:.8rem;margin-top:.7rem;"></div>
+    </div>
+    <div class="prof-dash" id="prof-dash">
+      <div class="page-title">👤 Tableau de bord enseignant</div>
+      <p class="page-sub">Suivi des résultats QCM — données envoyées vers votre Google Sheets</p>
+      <div class="prof-actions">
+        <a class="btn-p" href="https://docs.google.com/spreadsheets/" target="_blank">📊 Ouvrir Google Sheets</a>
+        <button class="btn-o" onclick="alert('Dans Google Sheets : Fichier → Télécharger → Microsoft Excel (.xlsx)')">📥 Comment exporter en Excel</button>
+      </div>
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.2rem;margin-bottom:1.5rem;font-size:.85rem;line-height:1.7;">
+        <strong style="color:var(--cyan);">Comment consulter les résultats :</strong>
+        <ol style="padding-left:1.2rem;margin-top:.6rem;">
+          <li>Ouvre ton Google Sheets relié au script (lien ci-dessus)</li>
+          <li>Chaque ligne = une tentative de QCM d'un élève : date, identifiant, classe estimée, thème, score</li>
+          <li>Pour les graphiques de progression : sélectionne les colonnes → Insertion → Graphique</li>
+          <li>Pour exporter en Excel : Fichier → Télécharger → Microsoft Excel (.xlsx)</li>
+        </ol>
+      </div>
+      <div style="background:rgba(255,184,0,.08);border:1px solid rgba(255,184,0,.25);border-radius:10px;padding:1.1rem;font-size:.83rem;line-height:1.6;">
+        ℹ️ Les résultats de tes élèves arrivent automatiquement dans ton Google Sheets dès qu'ils terminent un QCM. Cette page ne stocke rien : elle te redirige simplement vers ton tableau Google où sont tes données réelles.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <button class="mclose" onclick="closeModal()">✕ Fermer</button>
+    <div class="fiche-content" id="modal-content"></div>
+  </div>
+</div>
+
+<footer>⚡ ElectroMELEC — Portail BAC Pro MELEC adapté Polynésie française</footer>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
